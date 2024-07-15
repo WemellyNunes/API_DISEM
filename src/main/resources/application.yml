@@ -1,0 +1,23 @@
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    database-platform: rg.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/apidisem
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+  sql:
+    init:
+      platform: postgres
+
+  #api:
+    #security:
+      #token:
+        #secret: ${JWT_SECRET:my-secret-key}
+
+
