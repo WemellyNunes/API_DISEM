@@ -9,6 +9,6 @@ services:
       POSTGRES_DB=mydatabase: apidisem
       POSTGRES_PASSWORD: postgres
     ports:
-      - '5435:5432'
+      - '5435:5434'
     volumes:
       - ./data_apiDisem:/var/lib/postgresql/data
