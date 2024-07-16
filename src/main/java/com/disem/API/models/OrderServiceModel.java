@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "TB_ORDER_SERVICE")
-public class OrderService {
+public class OrderServiceModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
