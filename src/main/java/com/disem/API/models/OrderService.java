@@ -14,4 +14,6 @@ public class OrderService {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    private String requisition;
+
 }
