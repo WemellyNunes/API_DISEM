@@ -1,4 +1,4 @@
-package com.disem.API.enums;
+package com.disem.API.enums.OrderServiceEnum;
 
 public enum TypeTreatmentEnum {
     COMUN,
