@@ -1,6 +1,6 @@
 package com.disem.API.models;
 
-import com.disem.API.enums.*;
+import com.disem.API.enums.OrderServiceEnum.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,38 +16,61 @@ public class OrderServiceModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
     @NotNull
+    @Enumerated(EnumType.STRING)
     private OriginEnum origin;
-    @NotBlank
-    private String requisition;
+
     @NotNull
+    private Integer requisition;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private ClassEnum classification;
+
     @NotBlank
     private String unit;
+
     @NotBlank
     private String requester;
+
     @NotBlank
     private String contact;
-    @NotBlank
+
+    @NotNull
     private String preparationObject;
+
     @NotNull
+    @Enumerated(EnumType.STRING)
     private TypeMaintenanceEnum typeMaintenance;
+
     @NotNull
+    @Enumerated(EnumType.STRING)
     private SystemEnum system;
+
     @NotBlank
     private String maintenanceUnit;
+
     @NotBlank
     private String maintenanceIndicators;
+
     @NotBlank
     private String observation;
+
     @NotNull
+    @Enumerated(EnumType.STRING)
     private TypeTreatmentEnum typeTreatment;
+
     @NotNull
+    @Enumerated(EnumType.STRING)
     private StatusEnum status;
+
     @NotNull
     private LocalDateTime creationDate;
+
     @NotNull
     private LocalDateTime modificationDate;
+
     @NotBlank
     private String openDays;
 
