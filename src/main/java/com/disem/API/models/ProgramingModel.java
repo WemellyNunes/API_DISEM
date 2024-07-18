@@ -13,7 +13,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "TB_PROGRAMING")
-public class Programing {
+public class ProgramingModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -43,4 +43,8 @@ public class Programing {
 
     @NotBlank
     private String delayedDays;
+
+    @ManyToOne
+    @JoinColumn(name = "orderService_id")
+    private OrderServiceModel orderServiceModel;
 }

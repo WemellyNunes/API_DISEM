@@ -1,12 +1,15 @@
 package com.disem.API.models;
 
 import com.disem.API.enums.OrdersServices.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -73,5 +76,9 @@ public class OrderServiceModel {
 
     @NotBlank
     private String openDays;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "programing")
+    private List<ProgramingModel> programings = new ArrayList<>();
 
 }
