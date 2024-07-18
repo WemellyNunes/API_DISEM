@@ -19,18 +19,22 @@ public class OrderServiceService {
 
     @Transactional
     public OrderServiceModel save(OrderServiceModel orderServiceModel){
+
         return orderServiceRepository.save(orderServiceModel);
     }
 
     public Optional<OrderServiceModel> findById(UUID id){
+
         return orderServiceRepository.findById(id);
     }
 
     public Page<OrderServiceModel> findAll(Pageable pageable) {
+
         return orderServiceRepository.findAll(pageable);
     }
 
     public void delete(OrderServiceModel orderServiceModel){
+
         orderServiceRepository.delete(orderServiceModel);
     }
 
