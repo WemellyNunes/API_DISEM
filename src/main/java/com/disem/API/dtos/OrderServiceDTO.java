@@ -1,6 +1,6 @@
 package com.disem.API.dtos;
 
-import com.disem.API.enums.OrderServiceEnum.*;
+import com.disem.API.enums.OrdersServices.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -41,7 +41,7 @@ public class OrderServiceDTO {
     @NotBlank
     private String maintenanceIndicators;
 
-    @NotBlank
+
     private String observation;
 
     @NotNull

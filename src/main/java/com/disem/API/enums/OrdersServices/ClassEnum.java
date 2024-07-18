@@ -1,4 +1,4 @@
-package com.disem.API.enums.OrderServiceEnum;
+package com.disem.API.enums.OrdersServices;
 
 public enum ClassEnum {
     CLASSE_A("Classe A"),

@@ -1,6 +1,6 @@
 package com.disem.API.models;
 
-import com.disem.API.enums.OrderServiceEnum.*;
+import com.disem.API.enums.OrdersServices.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -54,7 +54,7 @@ public class OrderServiceModel {
     @NotBlank
     private String maintenanceIndicators;
 
-    @NotBlank
+
     private String observation;
 
     @NotNull
