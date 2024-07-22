@@ -11,7 +11,6 @@ import java.util.UUID;
 
 @Data
 public class ProgramingDTO {
-    private UUID id;
 
     @NotNull
     private LocalDate date;
@@ -31,7 +30,7 @@ public class ProgramingDTO {
     private String observation;
 
     @NotNull
-    private LocalDateTime creatioDate;
+    private LocalDateTime creationDate;
 
     @NotNull
     private LocalDateTime modificationDate;

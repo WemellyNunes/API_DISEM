@@ -36,7 +36,7 @@ public class ProgramingModel {
     private String observation;
 
     @NotNull
-    private LocalDateTime creatioDate;
+    private LocalDateTime creationDate;
 
     @NotNull
     private LocalDateTime modificationDate;
@@ -46,5 +46,5 @@ public class ProgramingModel {
 
     @ManyToOne
     @JoinColumn(name = "orderService_id")
-    private OrderServiceModel orderServiceModel;
+    private OrderServiceModel orderService;
 }
