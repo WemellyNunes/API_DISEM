@@ -78,7 +78,7 @@ public class OrderServiceModel {
     private String openDays;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "programing")
+    @OneToMany(mappedBy = "orderServiceModel")
     private List<ProgramingModel> programings = new ArrayList<>();
 
 }
