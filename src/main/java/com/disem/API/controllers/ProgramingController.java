@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class ProgramingController {
@@ -41,7 +43,60 @@ public class ProgramingController {
         }
     }
 
-    //@GetMapping("/programings")
-   // @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/programings")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Object> getAllProgramings(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC)Pageable pageable){
+        Page<ProgramingModel> programingModelPage = programingService.findAll(pageable);
+        if (programingModelPage.isEmpty()){
+            return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(programingModelPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/programings/{id}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Object> getOnePrograming(@PathVariable(value = "id") UUID id) {
+        Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
+        if (programingModelOptional.isEmpty()){
+            return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(programingModelOptional.get(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("programing/{id}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Object> deleteOnePrograming(@PathVariable(value = "id") UUID id){
+        Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
+        if (programingModelOptional.isEmpty()){
+            return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
+        } else {
+            programingService.delete(programingModelOptional.get());
+            return new ResponseEntity<>("Programação apagada com sucesso", HttpStatus.OK);
+        }
+    }
+
+    @PutMapping("programing/{id}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Object> updatePrograming(@PathVariable(value = "id") UUID id, @RequestBody @Valid ProgramingDTO programingDTO){
+        Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
+        if (programingModelOptional.isEmpty()){
+            return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
+
+        } else {
+            var programingModel = programingModelOptional.get();
+
+            programingModel.setDate(programingDTO.getDate());
+            programingModel.setTime(programingDTO.getTime());
+            programingModel.setOverseer(programingDTO.getOverseer());
+            programingModel.setWorker(programingDTO.getWorker());
+            programingModel.setCost(programingDTO.getCost());
+            programingModel.setObservation(programingDTO.getObservation());
+            programingModel.setCreationDate(programingDTO.getCreationDate());
+            programingModel.setModificationDate(programingDTO.getModificationDate());
+            programingModel.setDelayedDays(programingDTO.getDelayedDays());
+
+            return new ResponseEntity<>(programingService.save(programingModel), HttpStatus.OK);
+        }
+    }
 
 }
