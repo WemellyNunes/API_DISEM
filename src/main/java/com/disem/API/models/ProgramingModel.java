@@ -1,5 +1,6 @@
 package com.disem.API.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,8 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -47,4 +50,8 @@ public class ProgramingModel {
     @ManyToOne
     @JoinColumn(name = "orderService_id")
     private OrderServiceModel orderService;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "programing")
+    private List<ImageModel> images = new ArrayList<>();
 }
