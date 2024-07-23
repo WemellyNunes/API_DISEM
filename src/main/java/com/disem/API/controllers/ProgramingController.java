@@ -8,7 +8,6 @@ import com.disem.API.services.ProgramingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -45,7 +44,7 @@ public class ProgramingController {
 
     @GetMapping("/programings")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    public ResponseEntity<Object> getAllProgramings(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC)Pageable pageable){
+    public ResponseEntity<Object> getAllPrograming(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         Page<ProgramingModel> programingModelPage = programingService.findAll(pageable);
         if (programingModelPage.isEmpty()){
             return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
