@@ -29,12 +29,13 @@ public class ProgramingController {
     OrderServiceService orderServiceService;
 
     @PostMapping("/programings")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> createPrograming(@RequestBody @Valid ProgramingDTO programingDTO){
         Optional<OrderServiceModel> orderServiceModelOptional = orderServiceService.findById(programingDTO.getOrderService_id());
+
         if (orderServiceModelOptional.isEmpty()){
             return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
-        } else {
+        }
+        else {
             var programingModel = new ProgramingModel();
             BeanUtils.copyProperties(programingDTO, programingModel);
             programingModel.setOrderService(orderServiceModelOptional.get());
@@ -42,8 +43,8 @@ public class ProgramingController {
         }
     }
 
+
     @GetMapping("/programings")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> getAllPrograming(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         Page<ProgramingModel> programingModelPage = programingService.findAll(pageable);
         if (programingModelPage.isEmpty()){
@@ -52,8 +53,8 @@ public class ProgramingController {
         return new ResponseEntity<>(programingModelPage, HttpStatus.OK);
     }
 
+
     @GetMapping("/programings/{id}")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> getOnePrograming(@PathVariable(value = "id") UUID id) {
         Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
         if (programingModelOptional.isEmpty()){
@@ -62,26 +63,28 @@ public class ProgramingController {
         return new ResponseEntity<>(programingModelOptional.get(), HttpStatus.OK);
     }
 
+
     @DeleteMapping("programing/{id}")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> deleteOnePrograming(@PathVariable(value = "id") UUID id){
         Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
         if (programingModelOptional.isEmpty()){
             return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
-        } else {
+        }
+        else {
             programingService.delete(programingModelOptional.get());
             return new ResponseEntity<>("Programação apagada com sucesso", HttpStatus.OK);
         }
     }
 
+
     @PutMapping("programing/{id}")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> updatePrograming(@PathVariable(value = "id") UUID id, @RequestBody @Valid ProgramingDTO programingDTO){
         Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
         if (programingModelOptional.isEmpty()){
             return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
 
-        } else {
+        }
+        else {
             var programingModel = programingModelOptional.get();
 
             programingModel.setDate(programingDTO.getDate());

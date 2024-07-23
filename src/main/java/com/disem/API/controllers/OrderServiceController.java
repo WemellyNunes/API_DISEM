@@ -18,14 +18,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-//@RequestMapping("/api")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class OrderServiceController {
 
     @Autowired
     OrderServiceService orderServiceService;
 
     @PostMapping("/orders")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> saveOrderService(@RequestBody @Valid OrderServiceDTO orderServiceDTO){
         var orderServiceModel = new OrderServiceModel();
 
@@ -33,8 +32,8 @@ public class OrderServiceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderServiceService.save(orderServiceModel));
     }
 
+
     @GetMapping("/orders")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> getAllOrderService(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         Page<OrderServiceModel> ordersPage = orderServiceService.findAll(pageable);
         if (ordersPage.isEmpty()){
@@ -43,8 +42,8 @@ public class OrderServiceController {
         return new ResponseEntity<>(ordersPage, HttpStatus.OK);
     }
 
+
     @GetMapping("/orders/{id}")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> getOneOrderService(@PathVariable(value = "id") UUID id) {
         Optional<OrderServiceModel> orderService = orderServiceService.findById(id);
         if (orderService.isEmpty()){
@@ -53,25 +52,28 @@ public class OrderServiceController {
         return new ResponseEntity<>(orderService.get(), HttpStatus.OK);
     }
 
+
     @DeleteMapping("/orders/{id}")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> deleteoneOrderService(@PathVariable(value = "id") UUID id) {
         Optional<OrderServiceModel> orderService = orderServiceService.findById(id);
         if (orderService.isEmpty()){
             return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
-        } else {
+        }
+        else {
             orderServiceService.delete(orderService.get());
             return new ResponseEntity<>("Ordem de serviço apagada", HttpStatus.OK);
         }
     }
 
+
     @PutMapping("/orders/{id}")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<Object> updateOrderService(@PathVariable(value = "id") UUID id, @RequestBody @Valid OrderServiceDTO orderServiceDTO) {
         Optional<OrderServiceModel> orderServiceModelOptional = orderServiceService.findById(id);
+
         if (orderServiceModelOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ordem de serviço não encontrada");
-        } else {
+        }
+        else {
             var orderServiceModel = orderServiceModelOptional.get();
 
             orderServiceModel.setOrigin(orderServiceDTO.getOrigin());

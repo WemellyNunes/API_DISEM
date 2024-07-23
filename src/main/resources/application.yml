@@ -7,7 +7,7 @@ spring:
       ddl-auto: update
 
   datasource:
-    url: jdbc:postgresql://localhost:5434/apidisem
+    url: jdbc:postgresql://localhost:5432/apidisem
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
