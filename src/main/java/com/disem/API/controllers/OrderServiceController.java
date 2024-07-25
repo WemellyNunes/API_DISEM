@@ -2,7 +2,10 @@ package com.disem.API.controllers;
 
 import com.disem.API.dtos.OrderServiceDTO;
 import com.disem.API.models.OrderServiceModel;
+import com.disem.API.models.PreventiveSystemModel;
+import com.disem.API.repositories.PreventiveSystemRepository;
 import com.disem.API.services.OrderServiceService;
+import com.disem.API.services.PreventiveSystemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -24,11 +28,21 @@ public class OrderServiceController {
     @Autowired
     OrderServiceService orderServiceService;
 
+    @Autowired
+    PreventiveSystemRepository preventiveSystemRepository;
+
+
     @PostMapping("/orders")
     public ResponseEntity<Object> saveOrderService(@RequestBody @Valid OrderServiceDTO orderServiceDTO){
         var orderServiceModel = new OrderServiceModel();
 
         BeanUtils.copyProperties(orderServiceDTO, orderServiceModel);
+
+        if (orderServiceDTO.getPreventive_system_id() != null){
+            PreventiveSystemModel preventiveSystemModel = preventiveSystemRepository.findById(orderServiceDTO.getPreventive_system_id())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Preventiva de sistema não encontrada"));
+            orderServiceModel.setPreventiveSystem(preventiveSystemModel);
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(orderServiceService.save(orderServiceModel));
     }
 

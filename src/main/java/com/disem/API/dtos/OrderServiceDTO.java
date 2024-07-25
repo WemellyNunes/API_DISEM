@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Data
 public class OrderServiceDTO {
     @NotNull
@@ -58,4 +60,6 @@ public class OrderServiceDTO {
 
     @NotBlank
     private String openDays;
+
+    private UUID preventive_system_id;
 }

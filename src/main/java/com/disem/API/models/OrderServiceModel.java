@@ -81,4 +81,8 @@ public class OrderServiceModel {
     @OneToMany(mappedBy = "orderService")
     private List<ProgramingModel> programings = new ArrayList<>();
 
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "preventive_system_id", nullable = true)
+    private PreventiveSystemModel preventiveSystem;
+
 }

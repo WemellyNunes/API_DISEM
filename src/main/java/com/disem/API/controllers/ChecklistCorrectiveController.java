@@ -55,7 +55,7 @@ public class ChecklistCorrectiveController {
         return new ResponseEntity<>(checklistCorrectiveModelPage, HttpStatus.OK);
     }
 
-    @GetMapping("/checklist/{id}")
+    @GetMapping("/checklistCorrective/{id}")
     public ResponseEntity<Object> getOneChecklistCorretive(@PathVariable(value = "id")UUID id) {
         Optional<ChecklistCorrectiveModel> checklistCorrectiveModelOptional = checklistCorrectiveService.findById(id);
 
@@ -93,7 +93,4 @@ public class ChecklistCorrectiveController {
             return new ResponseEntity<>(checklistCorrectiveService.save(checklistCorrective), HttpStatus.OK);
         }
     }
-
-
-
 }
