@@ -21,7 +21,8 @@ public class PreventiveSystemModel {
     @NotBlank
     private String period;
 
-    @NotBlank
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private SystemEnum system;
 
     @NotBlank
@@ -38,6 +39,4 @@ public class PreventiveSystemModel {
     @NotNull
     private LocalDateTime modificationDate;
 
-    @OneToMany(mappedBy = "preventiveSystem")
-    private List<OrderServiceModel> orderServices;
 }

@@ -12,7 +12,7 @@ public class PreventiveSystemDTO {
     @NotBlank
     private String period;
 
-    @NotBlank
+    @NotNull
     private SystemEnum system;
 
     @NotBlank
