@@ -1,9 +1,7 @@
 package com.disem.API.services;
 
 import com.disem.API.models.PreventiveEquipamentModel;
-import com.disem.API.models.PreventiveSystemModel;
 import com.disem.API.repositories.PreventiveEquipamentRepository;
-import com.disem.API.repositories.PreventiveSystemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

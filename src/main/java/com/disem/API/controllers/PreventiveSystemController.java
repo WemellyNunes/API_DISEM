@@ -70,7 +70,7 @@ public class PreventiveSystemController {
         Optional<PreventiveSystemModel> preventiveSystem = preventiveSystemService.findById(id);
 
         if (preventiveSystem.isEmpty()){
-            return new ResponseEntity<>("Preventiva de sistema apagada", HttpStatus.OK);
+            return new ResponseEntity<>("Preventiva não encontrada", HttpStatus.NOT_FOUND);
         }
         else {
             var preventiveSystemModel = new PreventiveSystemModel();
