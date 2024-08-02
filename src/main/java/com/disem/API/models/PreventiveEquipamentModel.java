@@ -53,4 +53,8 @@ public class PreventiveEquipamentModel {
 
     @NotNull
     private LocalDateTime modificationDate;
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "orderService_id", nullable = true)
+    private OrderServiceModel orderService;
 }

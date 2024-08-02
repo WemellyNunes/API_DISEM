@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class PreventiveSystemDTO {
@@ -28,4 +29,6 @@ public class PreventiveSystemDTO {
 
     @NotNull
     private LocalDateTime modificationDate;
+
+    private UUID orderService_id;
 }

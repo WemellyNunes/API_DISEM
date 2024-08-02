@@ -61,5 +61,4 @@ public class OrderServiceDTO {
     @NotBlank
     private String openDays;
 
-    private UUID preventive_system_id;
 }
