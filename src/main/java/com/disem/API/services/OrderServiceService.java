@@ -9,10 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class OrderServiceService {
@@ -22,27 +20,22 @@ public class OrderServiceService {
 
     @Transactional
     public OrderServiceModel save(OrderServiceModel orderServiceModel){
-
         return orderServiceRepository.save(orderServiceModel);
     }
 
     public Optional<OrderServiceModel> findById(UUID id){
-
         return orderServiceRepository.findById(id);
     }
 
     public Page<OrderServiceModel> findAll(Pageable pageable) {
-
         return orderServiceRepository.findAll(pageable);
     }
 
     public void delete(OrderServiceModel orderServiceModel){
-
         orderServiceRepository.delete(orderServiceModel);
     }
 
-    //consultas especificas
-
+    // Consultas específicas
     public Optional<OrderServiceModel> findByRequisition(Integer requisition){
         return orderServiceRepository.findByRequisition(requisition);
     }
@@ -75,7 +68,17 @@ public class OrderServiceService {
         return orderServiceRepository.findByTypeMaintenance(type);
     }
 
-    public List<OrderServiceModel> findByCreationDate(LocalDateTime creationDate){
-        return orderServiceRepository.findByCreationDate(creationDate);
+    public Map<ClassEnum, Integer> findOrdersByClassForCurrentMonth() {
+        LocalDate startDate = LocalDate.now().withDayOfMonth(1);
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+
+        Map<ClassEnum, Integer> ordersClassQuantities = new HashMap<>();
+        for (ClassEnum classEnum : ClassEnum.values()) {
+            ordersClassQuantities.put(classEnum, orderServiceRepository.countByClassificationAndDateBetween(classEnum, startDate, endDate));
+        }
+        return ordersClassQuantities;
     }
+
+    //public Map<String, Integer> findOrdersByUnit()
 }
+
