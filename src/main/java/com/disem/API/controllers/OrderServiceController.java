@@ -3,10 +3,7 @@ package com.disem.API.controllers;
 import com.disem.API.dtos.OrderServiceDTO;
 import com.disem.API.enums.OrdersServices.*;
 import com.disem.API.models.OrderServiceModel;
-import com.disem.API.models.PreventiveSystemModel;
-import com.disem.API.repositories.PreventiveSystemRepository;
 import com.disem.API.services.OrderServiceService;
-import com.disem.API.services.PreventiveSystemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +14,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,8 +70,6 @@ public class OrderServiceController {
     }
 
 
-    //CONSULTAS ESPECIFICAS
-
     @PutMapping("/orders/{id}")
     public ResponseEntity<Object> updateOrderService(@PathVariable(value = "id") UUID id, @RequestBody @Valid OrderServiceDTO orderServiceDTO) {
         Optional<OrderServiceModel> orderServiceModelOptional = orderServiceService.findById(id);
@@ -100,7 +94,7 @@ public class OrderServiceController {
             orderServiceModel.setObservation(orderServiceDTO.getObservation());
             orderServiceModel.setTypeTreatment(orderServiceDTO.getTypeTreatment());
             orderServiceModel.setStatus(orderServiceDTO.getStatus());
-            orderServiceModel.setCreationDate(orderServiceDTO.getCreationDate());
+            orderServiceModel.setDate(orderServiceDTO.getDate());
             orderServiceModel.setModificationDate(orderServiceDTO.getModificationDate());
             orderServiceModel.setOpenDays(orderServiceDTO.getOpenDays());
 
@@ -108,6 +102,7 @@ public class OrderServiceController {
         }
     }
 
+    //CONSULTAS ESPECIFICAS
 
     @GetMapping("/orders/requisition/{requisition}")
     public ResponseEntity<Object> getByRequisition(@PathVariable(value = "requisition") Integer requisition){
@@ -181,7 +176,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("orders/typeMaintence/{type}")
+    @GetMapping("orders/typeMaintenance/{type}")
     public ResponseEntity<Object> getByType(@PathVariable(value = "type")TypeMaintenanceEnum type){
         List<OrderServiceModel> orderServiceModelList = orderServiceService.findByTypeMaintenance(type);
         if (orderServiceModelList.isEmpty()){
@@ -191,14 +186,14 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("orders/creation/{creationDate}")
-    public ResponseEntity<Object> getByCreationDate(@PathVariable(value = "creationDate")LocalDateTime creationDate){
-        List<OrderServiceModel> orderServiceModelList = orderServiceService.findByCreationDate(creationDate);
+    /*@GetMapping("orders/creation/{date}")
+    public ResponseEntity<Object> getByCreationDate(@PathVariable(value = "date") LocalDate date){
+        List<OrderServiceModel> orderServiceModelList = orderServiceService.findByCreationDate(date);
         if (orderServiceModelList.isEmpty()){
             return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(orderServiceModelList, HttpStatus.OK);
-    }
+    }*/
 
 }
 
