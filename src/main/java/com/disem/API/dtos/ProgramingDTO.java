@@ -13,7 +13,7 @@ import java.util.UUID;
 public class ProgramingDTO {
 
     @NotNull
-    private LocalDate date;
+    private LocalDate datePrograming;
 
     @NotNull
     private LocalTime time;

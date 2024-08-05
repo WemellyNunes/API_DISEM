@@ -22,7 +22,7 @@ public class ProgramingModel {
     private UUID id;
 
     @NotNull
-    private LocalDate date;
+    private LocalDate datePrograming;
 
     @NotNull
     private LocalTime time;
