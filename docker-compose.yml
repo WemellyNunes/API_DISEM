@@ -12,3 +12,14 @@ services:
       - '5435:5434'
     volumes:
       - ./data_apiDisem:/var/lib/postgresql/data
+
+  app:
+      build: .
+      ports:
+        - "8080:8080"
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://dbDisem:5432/apidisem
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: postgres
+      depends_on:
+        - dbDisem

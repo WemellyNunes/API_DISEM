@@ -15,9 +15,9 @@ spring:
     init:
       platform: postgres
 
-  #api:
-    #security:
-      #token:
-        #secret: ${JWT_SECRET:my-secret-key}
+  api:
+    security:
+      token:
+        secret: ${JWT_SECRET:my-secret-key}
 
 
