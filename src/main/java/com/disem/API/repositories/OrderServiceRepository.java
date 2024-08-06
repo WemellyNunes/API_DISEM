@@ -30,6 +30,14 @@ public interface OrderServiceRepository extends JpaRepository<OrderServiceModel,
 
     Integer countByClassificationAndDateBetween(ClassEnum classification, LocalDate startDate, LocalDate endDate);
 
-    Integer countByUnit(String unit);
+    //Estatisticas do dashboard
+
+    long countByDateBetween(LocalDate startDate, LocalDate endDate);
+
+    long countByTypeMaintenanceAndDateBetween(TypeMaintenanceEnum typeMaintenance, LocalDate startDate, LocalDate endDate);
+
+    long countBySystemAndDateBetween(SystemEnum system, LocalDate startDate, LocalDate endDate);
+
+    long countByOriginAndStatus(OriginEnum origin, StatusEnum status);
 }
 

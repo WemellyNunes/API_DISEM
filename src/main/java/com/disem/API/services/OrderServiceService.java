@@ -68,6 +68,8 @@ public class OrderServiceService {
         return orderServiceRepository.findByTypeMaintenance(type);
     }
 
+    //Serviços do dashboard
+
     public Map<ClassEnum, Integer> findOrdersByClassForCurrentMonth() {
         LocalDate startDate = LocalDate.now().withDayOfMonth(1);
         LocalDate endDate = startDate.plusMonths(1).minusDays(1);
@@ -77,6 +79,49 @@ public class OrderServiceService {
             ordersClassQuantities.put(classEnum, orderServiceRepository.countByClassificationAndDateBetween(classEnum, startDate, endDate));
         }
         return ordersClassQuantities;
+    }
+
+
+    public Map<TypeMaintenanceEnum, Double> findOrdersByTypeForCurrentMonth() {
+        LocalDate startDate = LocalDate.now().withDayOfMonth(1);
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+
+        long totalOrders = orderServiceRepository.countByDateBetween(startDate, endDate);
+
+        Map<TypeMaintenanceEnum, Double> ordersTypeQuantities = new HashMap<>();
+        for (TypeMaintenanceEnum typeMaintenanceEnum : TypeMaintenanceEnum.values()) {
+            long count = orderServiceRepository.countByTypeMaintenanceAndDateBetween(typeMaintenanceEnum, startDate, endDate);
+            double percentage = Math.round((double) count / totalOrders * 100);
+            ordersTypeQuantities.put(typeMaintenanceEnum, percentage);
+        }
+        return ordersTypeQuantities;
+    }
+
+
+    public Map<SystemEnum, Double> findOrdersBySystemForCurrentMonth() {
+        LocalDate startDate = LocalDate.now().withDayOfMonth(1);
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+
+        long totalOrders = orderServiceRepository.countByDateBetween(startDate, endDate);
+
+        Map<SystemEnum, Double> ordersSystemQuantities = new HashMap<>();
+        for (SystemEnum systemEnum : SystemEnum.values()) {
+            long count = orderServiceRepository.countBySystemAndDateBetween(systemEnum, startDate, endDate);
+            double percentage = Math.round((double) count / totalOrders * 100);
+            ordersSystemQuantities.put(systemEnum, percentage);
+        }
+        return ordersSystemQuantities;
+    }
+
+
+    public Map<String, Long> findOrdersSipacForStatus(OriginEnum origin, StatusEnum status1, StatusEnum status2){
+        long toAttendCount = orderServiceRepository.countByOriginAndStatus(origin, status1);
+        long finalizedCount = orderServiceRepository.countByOriginAndStatus(origin, status2);
+
+        Map<String, Long> ordersSipac = new HashMap<>();
+        ordersSipac.put("A_ATENDER", toAttendCount);
+        ordersSipac.put("FINALIZADAS", finalizedCount);
+        return ordersSipac;
     }
 
     //public Map<String, Integer> findOrdersByUnit()
