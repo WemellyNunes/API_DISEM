@@ -46,6 +46,28 @@ public class OrderStatisticController {
         return new ResponseEntity<>(ordersSipacQuantities, HttpStatus.OK);
     }
 
+    @GetMapping("/statistics/ordersMonth")
+    public ResponseEntity<Map<String, Long>> getMonthOrdersCount(){
+        Map<String, Long> monthOrders = orderServiceService.findOrdersByStatusForCurrentMonth(StatusEnum.A_ATENDER, StatusEnum.FINALIZADO);
+        return new ResponseEntity<>(monthOrders, HttpStatus.OK);
+    }
 
+    @GetMapping("/statistics/weekOrders")
+    public ResponseEntity<Map<String, Long>> getWeekOrdersCount() {
+        Map<String, Long> weekOrders = orderServiceService.findOrdersByStatusesForCurrentWeek(StatusEnum.A_ATENDER, StatusEnum.FINALIZADO);
+        return new ResponseEntity<>(weekOrders, HttpStatus.OK);
+    }
+
+    @GetMapping("/statistics/todayOrders")
+    public ResponseEntity<Map<String, Long>> getTodayOrdersCount(){
+        Map<String, Long> todayOrders = orderServiceService.findOrdersByStatusesForToday(StatusEnum.A_ATENDER, StatusEnum.FINALIZADO);
+        return new ResponseEntity<>(todayOrders, HttpStatus.OK);
+    }
+
+    @GetMapping("/statistics/yearOrders")
+    public ResponseEntity<Map<String,Long>> getYearOrdersCount() {
+        Map<String, Long> yearOrders = orderServiceService.findOrdersByStatusesForCurrentYear(StatusEnum.A_ATENDER, StatusEnum.FINALIZADO);
+        return new ResponseEntity<>(yearOrders, HttpStatus.OK);
+    }
 
 }
