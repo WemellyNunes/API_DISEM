@@ -61,6 +61,9 @@ public class OrderServiceModel {
 
     private String observation;
 
+    @Enumerated(EnumType.STRING)
+    private ImpactEnum impact;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private TypeTreatmentEnum typeTreatment;

@@ -47,6 +47,8 @@ public class OrderServiceDTO {
 
     private String observation;
 
+    private ImpactEnum impact;
+
     @NotNull
     private TypeTreatmentEnum typeTreatment;
 
