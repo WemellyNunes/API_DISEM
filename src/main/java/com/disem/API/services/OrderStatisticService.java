@@ -112,4 +112,14 @@ public class OrderStatisticService {
         return findOrdersByStatusesForPeriod(startDate, endDate, status1, status2);
     }
 
+    public Map<String, Long> findOrdersByCampus(){
+        Map<String, Long> ordersCampusQuantities = new HashMap<>();
+
+        for (CampusEnum campusEnum : CampusEnum.values()) {
+            long count = orderServiceRepository.countOrdersByCampus(campusEnum);
+            ordersCampusQuantities.put(campusEnum.name(), count);
+        }
+        return ordersCampusQuantities;
+    }
+
 }

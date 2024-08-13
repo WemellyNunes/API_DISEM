@@ -41,5 +41,7 @@ public interface OrderServiceRepository extends JpaRepository<OrderServiceModel,
     long countByOriginAndStatus(OriginEnum origin, StatusEnum status);
 
     long countByStatusAndDateBetween(StatusEnum status, LocalDate startDate, LocalDate endDate);
+
+    long countOrdersByCampus(CampusEnum campus);
 }
 
