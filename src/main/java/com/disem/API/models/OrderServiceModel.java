@@ -55,6 +55,10 @@ public class OrderServiceModel {
     @NotBlank
     private String maintenanceUnit;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private CampusEnum campus;
+
     @NotBlank
     private String maintenanceIndicators;
 

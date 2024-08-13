@@ -41,9 +41,11 @@ public class OrderServiceDTO {
     @NotBlank
     private String maintenanceUnit;
 
+    @NotNull
+    private CampusEnum campus;
+
     @NotBlank
     private String maintenanceIndicators;
-
 
     private String observation;
 
