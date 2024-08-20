@@ -48,7 +48,7 @@ public class ProgramingModel {
     private String delayedDays;
 
     @ManyToOne
-    @JoinColumn(name = "orderService_id")
+    @JoinColumn(name = "orderService_id", nullable = false)
     private OrderServiceModel orderService;
 
     @JsonIgnore

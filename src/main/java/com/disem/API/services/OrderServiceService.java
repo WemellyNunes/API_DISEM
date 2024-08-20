@@ -9,11 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.rmi.MarshalledObject;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
+
 import java.util.*;
 
 @Service
