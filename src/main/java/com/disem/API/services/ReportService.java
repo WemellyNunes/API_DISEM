@@ -1,7 +1,11 @@
 package com.disem.API.services;
 
+import com.disem.API.models.ChecklistCorrectiveModel;
+import com.disem.API.models.ImageModel;
 import com.disem.API.models.OrderServiceModel;
 import com.disem.API.models.ProgramingModel;
+import com.disem.API.repositories.ChecklistCorrectiveRepository;
+import com.disem.API.repositories.ImageRepository;
 import com.disem.API.repositories.OrderServiceRepository;
 import com.disem.API.repositories.ProgramingRepository;
 import com.itextpdf.io.font.constants.StandardFonts;
@@ -42,6 +46,12 @@ public class ReportService {
 
     @Autowired
     ProgramingRepository programingRepository;
+
+    @Autowired
+    ChecklistCorrectiveRepository checklistCorrectiveRepository;
+
+    @Autowired
+    ImageRepository imageRepository;
 
     public byte[] generateReport(UUID id) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -104,8 +114,9 @@ public class ReportService {
             document.add(ls);
 
             document.add(new Paragraph("N° da requisição: " + os.getRequisition()));
-            document.add(new Paragraph("Unidade do solicitante: " + os.getUnit()));
+            document.add(new Paragraph("Origem: " + os.getOrigin()));
             document.add(new Paragraph("Solicitante: " + os.getRequester()));
+            document.add(new Paragraph("Unidade do solicitante: " + os.getUnit()));
             document.add(new Paragraph("Contato: " + os.getContact()));
             document.add(new Paragraph("Objeto de preparo: " + os.getPreparationObject()));
             document.add(new Paragraph("Tipo de manutenção: " + os.getTypeMaintenance()));
@@ -113,7 +124,7 @@ public class ReportService {
             document.add(new Paragraph("Unidade da manutenção: " + os.getMaintenanceUnit()));
             document.add(new Paragraph("Campus: " + os.getCampus()));
             document.add(new Paragraph("Observação: " + os.getObservation()));
-            document.add(new Paragraph("Data de criação: " + os.getDate()));
+            document.add(new Paragraph("Data do registro: " + os.getDate()));
 
             document.add(new Paragraph("\n"));
 
@@ -134,11 +145,61 @@ public class ReportService {
                 document.add(new Paragraph("Data programada: " + programing.getDatePrograming()));
                 document.add(new Paragraph("Horario programado: " + programing.getTime()));
                 document.add(new Paragraph("Encarregado: " + programing.getOverseer()));
-                document.add(new Paragraph("Funcionarios: " + programing.getWorker()));
+                document.add(new Paragraph("Profissionais: " + programing.getWorker()));
                 document.add(new Paragraph("Cústo estimado: " + programing.getCost()));
                 document.add(new Paragraph("Observação: " + programing.getObservation()));
-                document.add(new Paragraph("Data de criação: " + programing.getCreationDate()));
+                document.add(new Paragraph("Data do registro: " + programing.getCreationDate()));
+
+                document.add(new Paragraph("\n"));
+
+                List<ChecklistCorrectiveModel> correctiveModels = checklistCorrectiveRepository.findByProgramingId(programing.getId());
+                for (ChecklistCorrectiveModel correctiveModel : correctiveModels) {
+                    Paragraph check = new Paragraph("Relato de execução")
+                            .setFont(boldFont)
+                            .setFontSize(13);
+                    document.add(check);
+
+                    LineSeparator l2 = new LineSeparator(new SolidLine());
+                    l2.setWidth(UnitValue.createPercentValue(100));
+                    l2.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.add(l2);
+
+                    document.add(new Paragraph("Tratativa/Solucão: " + correctiveModel.getTreatment()));
+                    document.add(new Paragraph("Data do registro: " + correctiveModel.getCreationDate()));
+
+                    document.add(new Paragraph("\n"));
+                }
+
+                List<ImageModel> imageModels = imageRepository.findByProgramingId(programing.getId());
+                for (ImageModel imageModel : imageModels) {
+                    Paragraph image = new Paragraph("Memorial fotografico")
+                            .setFont(boldFont)
+                            .setFontSize(13);
+                    document.add(image);
+
+                    LineSeparator l3 = new LineSeparator(new SolidLine());
+                    l3.setWidth(UnitValue.createPercentValue(100));
+                    l3.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.add(l3);
+
+                    document.add(new Paragraph("Imagens: \n" + imageModel.getNameFile()));
+                    document.add(new Paragraph("Descrição: " + imageModel.getDescription()));
+
+                    document.add(new Paragraph("\n"));
+
+                }
             }
+
+
+            Paragraph finish = new Paragraph("Finalização")
+                    .setFont(boldFont)
+                    .setFontSize(13);
+            document.add(finish);
+
+            LineSeparator l4 = new LineSeparator(new SolidLine());
+            l4.setWidth(UnitValue.createPercentValue(100));
+            l4.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            document.add(l4);
 
             document.close();
 
