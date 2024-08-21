@@ -47,6 +47,8 @@ public class ProgramingModel {
     @NotBlank
     private String delayedDays;
 
+    private String active;
+
     @ManyToOne
     @JoinColumn(name = "orderService_id", nullable = false)
     private OrderServiceModel orderService;

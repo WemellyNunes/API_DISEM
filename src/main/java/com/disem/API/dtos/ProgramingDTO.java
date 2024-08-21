@@ -38,6 +38,8 @@ public class ProgramingDTO {
     @NotBlank
     private String delayedDays;
 
+    private String active;
+
     @NotNull
     private UUID orderService_id;
 }
