@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
+
 
 @Service
 public class DocumentService {
@@ -22,7 +22,7 @@ public class DocumentService {
         return documentRepository.save(documentModel);
     }
 
-    public Optional<DocumentModel> findById(UUID id) {
+    public Optional<DocumentModel> findById(Long id) {
         return documentRepository.findById(id);
     }
 

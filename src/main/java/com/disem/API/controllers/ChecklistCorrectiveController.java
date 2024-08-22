@@ -8,7 +8,6 @@ import com.disem.API.services.ProgramingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.UUID;
+
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -56,7 +55,7 @@ public class ChecklistCorrectiveController {
     }
 
     @GetMapping("/checklistCorrective/{id}")
-    public ResponseEntity<Object> getOneChecklistCorretive(@PathVariable(value = "id")UUID id) {
+    public ResponseEntity<Object> getOneChecklistCorretive(@PathVariable(value = "id")Long id) {
         Optional<ChecklistCorrectiveModel> checklistCorrectiveModelOptional = checklistCorrectiveService.findById(id);
 
         if (checklistCorrectiveModelOptional.isEmpty()) {
@@ -66,7 +65,7 @@ public class ChecklistCorrectiveController {
     }
 
     @DeleteMapping("/checklistCorrective/{id}")
-    public ResponseEntity<Object> deleteChecklistCorrective(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deleteChecklistCorrective(@PathVariable(value = "id") Long id) {
         Optional<ChecklistCorrectiveModel> checklistCorrectiveModelOptional = checklistCorrectiveService.findById(id);
 
         if (checklistCorrectiveModelOptional.isEmpty()){
@@ -77,7 +76,7 @@ public class ChecklistCorrectiveController {
     }
 
     @PutMapping("checklistCorrective/{id}")
-    public ResponseEntity<Object> updateChecklistCorrective(@PathVariable(value = "id") UUID id, @RequestBody @Valid ChecklistCorrectiveDTO checklistCorrectiveDTO){
+    public ResponseEntity<Object> updateChecklistCorrective(@PathVariable(value = "id") Long id, @RequestBody @Valid ChecklistCorrectiveDTO checklistCorrectiveDTO){
         Optional<ChecklistCorrectiveModel> checklistCorrectiveModelOptional = checklistCorrectiveService.findById(id);
 
         if (checklistCorrectiveModelOptional.isEmpty()){

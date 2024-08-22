@@ -4,8 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.time.LocalDate;
+
 
 @Data
 public class ChecklistCorrectiveDTO {
@@ -13,11 +13,11 @@ public class ChecklistCorrectiveDTO {
     private String treatment;
 
     @NotNull
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     @NotNull
-    private LocalDateTime modificationDate;
+    private LocalDate modificationDate;
 
     @NotNull
-    private UUID programing_id;
+    private Long programing_id;
 }

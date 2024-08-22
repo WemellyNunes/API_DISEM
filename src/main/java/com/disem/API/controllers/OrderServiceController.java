@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -48,7 +48,7 @@ public class OrderServiceController {
 
 
     @GetMapping("/orders/{id}")
-    public ResponseEntity<Object> getOneOrderService(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> getOneOrderService(@PathVariable(value = "id") Long id) {
         Optional<OrderServiceModel> orderService = orderServiceService.findById(id);
         if (orderService.isEmpty()){
             return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
@@ -58,7 +58,7 @@ public class OrderServiceController {
 
 
     @DeleteMapping("/orders/{id}")
-    public ResponseEntity<Object> deleteOneOrderService(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deleteOneOrderService(@PathVariable(value = "id") Long id) {
         Optional<OrderServiceModel> orderService = orderServiceService.findById(id);
         if (orderService.isEmpty()){
             return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
@@ -71,7 +71,7 @@ public class OrderServiceController {
 
 
     @PutMapping("/orders/{id}")
-    public ResponseEntity<Object> updateOrderService(@PathVariable(value = "id") UUID id, @RequestBody @Valid OrderServiceDTO orderServiceDTO) {
+    public ResponseEntity<Object> updateOrderService(@PathVariable(value = "id") Long id, @RequestBody @Valid OrderServiceDTO orderServiceDTO) {
         Optional<OrderServiceModel> orderServiceModelOptional = orderServiceService.findById(id);
 
         if (orderServiceModelOptional.isEmpty()){

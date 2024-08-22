@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -57,7 +56,7 @@ public class PreventiveEquipamentController {
 
 
     @GetMapping("/preventiveEquipament/{id}")
-    public ResponseEntity<Object> getPreventiveEquipamentById(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> getPreventiveEquipamentById(@PathVariable(value = "id") Long id) {
         Optional<PreventiveEquipamentModel> preventiveEquipamentModel = preventiveEquipamentService.findById(id);
 
         if (preventiveEquipamentModel.isEmpty()) {
@@ -68,7 +67,7 @@ public class PreventiveEquipamentController {
 
 
     @DeleteMapping("/preventiveEquipament/{id}")
-    public ResponseEntity<Object> deletePreventiveEquipament(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deletePreventiveEquipament(@PathVariable(value = "id") Long id) {
         Optional<PreventiveEquipamentModel> preventiveEquipamentModel = preventiveEquipamentService.findById(id);
 
         if (preventiveEquipamentModel.isEmpty()) {
@@ -80,7 +79,7 @@ public class PreventiveEquipamentController {
 
 
     @PutMapping("preventiveEquipament/{id}")
-    public ResponseEntity<Object> updatePreventiveEquipament(@PathVariable(value = "id") UUID id, @RequestBody @Valid PreventiveEquipamentDTO preventiveEquipamentDTO){
+    public ResponseEntity<Object> updatePreventiveEquipament(@PathVariable(value = "id") Long id, @RequestBody @Valid PreventiveEquipamentDTO preventiveEquipamentDTO){
         Optional<PreventiveEquipamentModel> preventiveEquipamentModel = preventiveEquipamentService.findById(id);
 
         if (preventiveEquipamentModel.isEmpty()){

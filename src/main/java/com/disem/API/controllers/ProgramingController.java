@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 public class ProgramingController {
@@ -55,7 +54,7 @@ public class ProgramingController {
 
 
     @GetMapping("/programings/{id}")
-    public ResponseEntity<Object> getOnePrograming(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> getOnePrograming(@PathVariable(value = "id") Long id) {
         Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
         if (programingModelOptional.isEmpty()){
             return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
@@ -65,7 +64,7 @@ public class ProgramingController {
 
 
     @DeleteMapping("programing/{id}")
-    public ResponseEntity<Object> deleteOnePrograming(@PathVariable(value = "id") UUID id){
+    public ResponseEntity<Object> deleteOnePrograming(@PathVariable(value = "id") Long id){
         Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
         if (programingModelOptional.isEmpty()){
             return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
@@ -78,7 +77,7 @@ public class ProgramingController {
 
 
     @PutMapping("programing/{id}")
-    public ResponseEntity<Object> updatePrograming(@PathVariable(value = "id") UUID id, @RequestBody @Valid ProgramingDTO programingDTO){
+    public ResponseEntity<Object> updatePrograming(@PathVariable(value = "id") Long id, @RequestBody @Valid ProgramingDTO programingDTO){
         Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
         if (programingModelOptional.isEmpty()){
             return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);

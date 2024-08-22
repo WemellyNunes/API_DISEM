@@ -3,7 +3,7 @@ package com.disem.API.dtos;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.UUID;
+
 
 @Data
 public class DocumentDTO {
@@ -14,5 +14,5 @@ public class DocumentDTO {
     private String description;
 
     @NotNull
-    private UUID orderService_id;
+    private Long orderService_id;
 }

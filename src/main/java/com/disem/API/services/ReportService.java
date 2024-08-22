@@ -29,8 +29,9 @@ import org.springframework.stereotype.Service;
 
 
 import java.io.InputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
+
 
 @Service
 public class ReportService {
@@ -53,7 +54,7 @@ public class ReportService {
     @Autowired
     ImageRepository imageRepository;
 
-    public byte[] generateReport(UUID id) {
+    public byte[] generateReport(Long id) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         try {
@@ -113,6 +114,8 @@ public class ReportService {
             ls.setHorizontalAlignment(HorizontalAlignment.CENTER);
             document.add(ls);
 
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
             document.add(new Paragraph("N° da requisição: " + os.getRequisition()));
             document.add(new Paragraph("Origem: " + os.getOrigin()));
             document.add(new Paragraph("Solicitante: " + os.getRequester()));
@@ -124,7 +127,7 @@ public class ReportService {
             document.add(new Paragraph("Unidade da manutenção: " + os.getMaintenanceUnit()));
             document.add(new Paragraph("Campus: " + os.getCampus()));
             document.add(new Paragraph("Observação: " + os.getObservation()));
-            document.add(new Paragraph("Data do registro: " + os.getDate()));
+            document.add(new Paragraph("Data do registro: " + os.getDate().format(formatter)));
 
             document.add(new Paragraph("\n"));
 
@@ -142,13 +145,13 @@ public class ReportService {
                 document.add(l1);
 
                 document.add(new Paragraph("Id: " + programing.getId()));
-                document.add(new Paragraph("Data programada: " + programing.getDatePrograming()));
+                document.add(new Paragraph("Data programada: " + programing.getDatePrograming().format(formatter)));
                 document.add(new Paragraph("Horario programado: " + programing.getTime()));
                 document.add(new Paragraph("Encarregado: " + programing.getOverseer()));
                 document.add(new Paragraph("Profissionais: " + programing.getWorker()));
                 document.add(new Paragraph("Cústo estimado: " + programing.getCost()));
                 document.add(new Paragraph("Observação: " + programing.getObservation()));
-                document.add(new Paragraph("Data do registro: " + programing.getCreationDate()));
+                document.add(new Paragraph("Data do registro: " + programing.getCreationDate().format(formatter)));
 
                 document.add(new Paragraph("\n"));
 
@@ -165,7 +168,7 @@ public class ReportService {
                     document.add(l2);
 
                     document.add(new Paragraph("Tratativa/Solucão: " + correctiveModel.getTreatment()));
-                    document.add(new Paragraph("Data do registro: " + correctiveModel.getCreationDate()));
+                    document.add(new Paragraph("Data do registro: " + correctiveModel.getCreationDate().format(formatter)));
 
                     document.add(new Paragraph("\n"));
                 }
@@ -190,7 +193,6 @@ public class ReportService {
                 }
             }
 
-
             Paragraph finish = new Paragraph("Finalização")
                     .setFont(boldFont)
                     .setFontSize(13);
@@ -202,7 +204,6 @@ public class ReportService {
             document.add(l4);
 
             document.close();
-
 
         } catch (Exception e) {
             e.printStackTrace();

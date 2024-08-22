@@ -1,17 +1,17 @@
 package com.disem.API.models;
 
 import com.disem.API.enums.OrdersServices.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class OrderServiceModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -80,7 +80,7 @@ public class OrderServiceModel {
     private LocalDate date;
 
     @NotNull
-    private LocalDateTime modificationDate;
+    private LocalDate modificationDate;
 
     @NotBlank
     private String openDays;

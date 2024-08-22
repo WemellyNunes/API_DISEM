@@ -22,7 +22,7 @@ public class PreventiveSystemService {
         return repository.save(preventiveSystemModel);
     }
 
-    public Optional<PreventiveSystemModel> findById(UUID id){
+    public Optional<PreventiveSystemModel> findById(Long id){
         return repository.findById(id);
     }
 

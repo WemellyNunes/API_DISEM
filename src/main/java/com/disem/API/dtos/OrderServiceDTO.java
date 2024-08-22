@@ -5,9 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 public class OrderServiceDTO {
@@ -61,7 +60,7 @@ public class OrderServiceDTO {
     private LocalDate date;
 
     @NotNull
-    private LocalDateTime modificationDate;
+    private LocalDate modificationDate;
 
     @NotBlank
     private String openDays;

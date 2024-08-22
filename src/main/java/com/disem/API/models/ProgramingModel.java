@@ -7,11 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -19,7 +17,7 @@ import java.util.UUID;
 public class ProgramingModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
 
     @NotNull
     private LocalDate datePrograming;
@@ -39,10 +37,10 @@ public class ProgramingModel {
     private String observation;
 
     @NotNull
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     @NotNull
-    private LocalDateTime modificationDate;
+    private LocalDate modificationDate;
 
     @NotBlank
     private String delayedDays;

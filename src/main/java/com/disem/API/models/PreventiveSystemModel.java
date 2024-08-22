@@ -6,9 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -16,7 +14,7 @@ import java.util.UUID;
 public class PreventiveSystemModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
 
     @NotBlank
     private String period;
@@ -34,10 +32,10 @@ public class PreventiveSystemModel {
     private String prevision;
 
     @NotNull
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     @NotNull
-    private LocalDateTime modificationDate;
+    private LocalDate modificationDate;
 
     @OneToOne(optional = true)
     @JoinColumn(name = "orderService_id", nullable = true)

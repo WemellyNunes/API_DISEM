@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.UUID;
+
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -57,7 +57,7 @@ public class ImageController {
 
 
     @GetMapping("/image/{id}")
-    public ResponseEntity<Object> getOneImage(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> getOneImage(@PathVariable(value = "id") Long id) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
 
         if (imageModelOptional.isEmpty()) {
@@ -68,7 +68,7 @@ public class ImageController {
 
 
     @DeleteMapping("/image/{id}")
-    public ResponseEntity<Object> deleteImage(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deleteImage(@PathVariable(value = "id") Long id) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
 
         if (imageModelOptional.isEmpty()) {
@@ -80,7 +80,7 @@ public class ImageController {
 
 
     @PutMapping("/image/{id}")
-    public ResponseEntity<Object> updateImage(@PathVariable(value = "id") UUID id, @RequestBody @Valid ImageDTO imageDTO) {
+    public ResponseEntity<Object> updateImage(@PathVariable(value = "id") Long id, @RequestBody @Valid ImageDTO imageDTO) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
         if (imageModelOptional.isEmpty()) {
             return new ResponseEntity<>("Imagem não escontrada!", HttpStatus.NOT_FOUND);

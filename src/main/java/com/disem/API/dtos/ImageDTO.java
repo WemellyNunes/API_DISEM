@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.UUID;
+
 
 @Data
 public class ImageDTO {
@@ -16,5 +16,5 @@ public class ImageDTO {
     private String description;
 
     @NotNull
-    private UUID programing_id;
+    private Long programing_id;
 }

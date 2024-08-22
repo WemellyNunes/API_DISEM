@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ProgramingRepository extends JpaRepository<ProgramingModel, UUID> {
+public interface ProgramingRepository extends JpaRepository<ProgramingModel, Long> {
 
-    List<ProgramingModel> findByOrderServiceId(UUID orderServiceId);
+    List<ProgramingModel> findByOrderServiceId(Long orderServiceId);
 
 }

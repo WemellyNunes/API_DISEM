@@ -5,9 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.UUID;
+
 
 @Data
 public class ProgramingDTO {
@@ -30,10 +29,10 @@ public class ProgramingDTO {
     private String observation;
 
     @NotNull
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     @NotNull
-    private LocalDateTime modificationDate;
+    private LocalDate modificationDate;
 
     @NotBlank
     private String delayedDays;
@@ -41,5 +40,5 @@ public class ProgramingDTO {
     private String active;
 
     @NotNull
-    private UUID orderService_id;
+    private Long orderService_id;
 }

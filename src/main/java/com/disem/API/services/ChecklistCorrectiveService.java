@@ -26,7 +26,7 @@ public class ChecklistCorrectiveService {
         return checklistCorrectiveRepository.findAll(pageable);
     }
 
-    public Optional<ChecklistCorrectiveModel> findById(UUID id) {
+    public Optional<ChecklistCorrectiveModel> findById(Long id) {
         return checklistCorrectiveRepository.findById(id);
     }
 

@@ -4,8 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.time.LocalDate;
+
 
 @Data
 public class PreventiveEquipamentDTO {
@@ -43,10 +43,10 @@ public class PreventiveEquipamentDTO {
     private String prevision;
 
     @NotNull
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     @NotNull
-    private LocalDateTime modificationDate;
+    private LocalDate modificationDate;
 
-    private UUID orderService_id;
+    private Long orderService_id;
 }

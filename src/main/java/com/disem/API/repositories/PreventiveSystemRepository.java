@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
+
 
 @Repository
-public interface PreventiveSystemRepository extends JpaRepository<PreventiveSystemModel, UUID> {
-    Optional<PreventiveSystemModel> findById(UUID id);
+public interface PreventiveSystemRepository extends JpaRepository<PreventiveSystemModel, Long> {
+    Optional<PreventiveSystemModel> findById(Long id);
 }

@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -57,7 +56,7 @@ public class DocumentController {
 
 
     @GetMapping("/documents/{id}")
-    public ResponseEntity<Object> findById(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> findById(@PathVariable(value = "id") Long id) {
         Optional<DocumentModel> documentOptional = documentService.findById(id);
 
         if (documentOptional.isEmpty()) {
@@ -68,7 +67,7 @@ public class DocumentController {
 
 
     @DeleteMapping("/documents/{id}")
-    public ResponseEntity<Object> deleteDocument(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deleteDocument(@PathVariable(value = "id") Long id) {
         Optional<DocumentModel> documentOptional = documentService.findById(id);
 
         if (documentOptional.isEmpty()) {
@@ -80,7 +79,7 @@ public class DocumentController {
 
 
     @PutMapping("/documents/{id}")
-    public ResponseEntity<Object> updateDocument(@PathVariable(value = "id") UUID id, @RequestBody @Valid DocumentDTO documentDTO) {
+    public ResponseEntity<Object> updateDocument(@PathVariable(value = "id") Long id, @RequestBody @Valid DocumentDTO documentDTO) {
         Optional<DocumentModel> documentOptional = documentService.findById(id);
 
         if (documentOptional.isEmpty()) {

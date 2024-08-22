@@ -26,7 +26,7 @@ public class ProgramingService {
         return programingRepository.findAll(pageable);
     }
 
-    public Optional<ProgramingModel> findById(UUID id){
+    public Optional<ProgramingModel> findById(Long id){
         return programingRepository.findById(id);
     }
 

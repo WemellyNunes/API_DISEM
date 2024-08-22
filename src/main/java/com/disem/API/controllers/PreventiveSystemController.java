@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
-import java.util.UUID;
+
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -57,7 +57,7 @@ public class PreventiveSystemController {
 
 
     @GetMapping("/preventiveSystem/{id}")
-    public ResponseEntity<Object> getOnePreventiveSystem(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> getOnePreventiveSystem(@PathVariable(value = "id") Long id) {
         Optional<PreventiveSystemModel> preventiveSystem = preventiveSystemService.findById(id);
         if (preventiveSystem.isEmpty()){
             return new ResponseEntity<>("Preventiva de sistema não encontrado", HttpStatus.NOT_FOUND);
@@ -67,7 +67,7 @@ public class PreventiveSystemController {
 
 
     @DeleteMapping("/preventiveSystem/{id}")
-    public ResponseEntity<Object> deletePreventiveSystem(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deletePreventiveSystem(@PathVariable(value = "id") Long id) {
         Optional<PreventiveSystemModel> preventiveSystem = preventiveSystemService.findById(id);
         if (preventiveSystem.isEmpty()){
             return new ResponseEntity<>("Preventiva de sistema não encontrado", HttpStatus.NOT_FOUND);
@@ -78,7 +78,7 @@ public class PreventiveSystemController {
 
 
     @PutMapping("/preventiveSystem/{id}")
-    public ResponseEntity<Object> updatePreventiveSystem(@PathVariable(value = "id") UUID id, @RequestBody PreventiveSystemDTO preventiveSystemDTO) {
+    public ResponseEntity<Object> updatePreventiveSystem(@PathVariable(value = "id") Long id, @RequestBody PreventiveSystemDTO preventiveSystemDTO) {
         Optional<PreventiveSystemModel> preventiveSystem = preventiveSystemService.findById(id);
 
         if (preventiveSystem.isEmpty()){

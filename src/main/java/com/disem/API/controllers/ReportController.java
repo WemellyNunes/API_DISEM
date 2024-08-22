@@ -18,7 +18,7 @@ public class ReportController {
     ReportService reportService;
 
     @GetMapping("/{id}/report")
-    public ResponseEntity<byte[]> gerarReport(@PathVariable UUID id) {
+    public ResponseEntity<byte[]> gerarReport(@PathVariable Long id) {
         byte[] pdfContents = reportService.generateReport(id);
 
         HttpHeaders headers = new HttpHeaders();

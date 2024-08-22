@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 
 import java.util.Optional;
-import java.util.UUID;
+
 
 @Service
 public class ImageService {
@@ -27,7 +27,7 @@ public class ImageService {
         return imageRepository.findAll(pageable);
     }
 
-    public Optional<ImageModel> findById(UUID id) {
+    public Optional<ImageModel> findById(Long id) {
         return imageRepository.findById(id);
     }
 

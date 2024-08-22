@@ -5,11 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.UUID;
 
 @Repository
-public interface ImageRepository extends JpaRepository<ImageModel, UUID> {
+public interface ImageRepository extends JpaRepository<ImageModel, Long> {
 
-    List<ImageModel> findByProgramingId(UUID programingId);
+    List<ImageModel> findByProgramingId(Long programingId);
 
 }
