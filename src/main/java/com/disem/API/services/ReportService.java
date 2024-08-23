@@ -1,13 +1,8 @@
 package com.disem.API.services;
 
-import com.disem.API.models.ChecklistCorrectiveModel;
-import com.disem.API.models.ImageModel;
-import com.disem.API.models.OrderServiceModel;
-import com.disem.API.models.ProgramingModel;
-import com.disem.API.repositories.ChecklistCorrectiveRepository;
-import com.disem.API.repositories.ImageRepository;
-import com.disem.API.repositories.OrderServiceRepository;
-import com.disem.API.repositories.ProgramingRepository;
+import com.disem.API.enums.OrdersServices.StatusEnum;
+import com.disem.API.models.*;
+import com.disem.API.repositories.*;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -53,6 +48,9 @@ public class ReportService {
 
     @Autowired
     ImageRepository imageRepository;
+
+    @Autowired
+    DispatchOSRepository dispatchOSRepository;
 
     public byte[] generateReport(Long id) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -193,15 +191,28 @@ public class ReportService {
                 }
             }
 
-            Paragraph finish = new Paragraph("Finalização")
-                    .setFont(boldFont)
-                    .setFontSize(13);
-            document.add(finish);
+            if (os.getStatus() == StatusEnum.FINALIZADO) {
+                List<DispatchOSModel> dispatches = dispatchOSRepository.findByOrderServiceId(id);
 
-            LineSeparator l4 = new LineSeparator(new SolidLine());
-            l4.setWidth(UnitValue.createPercentValue(100));
-            l4.setHorizontalAlignment(HorizontalAlignment.CENTER);
-            document.add(l4);
+                if (!dispatches.isEmpty()) {
+                    Paragraph dispatchTitle = new Paragraph("Finalização")
+                            .setFont(boldFont)
+                            .setFontSize(13);
+                    document.add(dispatchTitle);
+
+                    LineSeparator separator = new LineSeparator(new SolidLine());
+                    separator.setWidth(UnitValue.createPercentValue(100));
+                    separator.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.add(separator);
+
+                    for (DispatchOSModel dispatch : dispatches) {
+                        document.add(new Paragraph("Despacho: " + dispatch.getContent()));
+                        document.add(new Paragraph("Data do registro: " + dispatch.getDateContent().format(formatter)));
+                    }
+                }
+            }
+
+            //add assinatura
 
             document.close();
 

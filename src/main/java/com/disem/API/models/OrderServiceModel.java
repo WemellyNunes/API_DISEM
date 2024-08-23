@@ -93,4 +93,8 @@ public class OrderServiceModel {
     @OneToMany(mappedBy = "orderService")
     private List<DocumentModel> documents = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "orderService")
+    private List<DispatchOSModel> dispatchOS = new ArrayList<>();
+
 }
