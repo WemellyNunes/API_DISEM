@@ -11,7 +11,8 @@ import lombok.Data;
 public class ImageModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tb_image_seq")
+    @SequenceGenerator(name = "tb_image_seq", sequenceName = "tb_image_seq", allocationSize = 1)
     private Long id;
 
     @NotBlank

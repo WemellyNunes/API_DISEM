@@ -26,6 +26,7 @@ public class ProgramingService {
         return programingRepository.findAll(pageable);
     }
 
+    @Transactional
     public Optional<ProgramingModel> findById(Long id){
         return programingRepository.findById(id);
     }

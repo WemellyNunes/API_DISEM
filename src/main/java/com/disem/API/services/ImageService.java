@@ -27,6 +27,7 @@ public class ImageService {
         return imageRepository.findAll(pageable);
     }
 
+    @Transactional
     public Optional<ImageModel> findById(Long id) {
         return imageRepository.findById(id);
     }

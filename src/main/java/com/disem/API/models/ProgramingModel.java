@@ -53,5 +53,5 @@ public class ProgramingModel {
 
     @JsonIgnore
     @OneToMany(mappedBy = "programing")
-    private List<ImageModel> images = new ArrayList<>();
+    private List<ImageModel> images;
 }
