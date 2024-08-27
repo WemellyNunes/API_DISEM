@@ -34,7 +34,11 @@ public class ImageController {
     ProgramingService programingService;
 
     @PostMapping("/images")
-    public ResponseEntity<Object> createImage(@RequestParam("file")MultipartFile file, @RequestParam("programingId") Long programingId) {
+    public ResponseEntity<Object> createImage(
+            @RequestParam("file")MultipartFile file,
+            @RequestParam("programingId") Long programingId,
+            @RequestParam(value = "description", required = false) String description)
+            {
 
        if (file.isEmpty()){
            return new ResponseEntity<>("nenhum arquivo enviado", HttpStatus.BAD_REQUEST);
@@ -51,6 +55,10 @@ public class ImageController {
             return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
         }
 
+        if (description == null || description.isEmpty()) {
+            description = "Descrição padrão da imagem";
+        }
+
         try {
             String uploadDir = System.getProperty("user.dir") + "/uploads/images/";
 
@@ -65,7 +73,7 @@ public class ImageController {
             String imagePath =  "/uploads/images/" + fileName;
             ImageModel imageModel = new ImageModel();
             imageModel.setNameFile(imagePath);
-            imageModel.setDescription("Descrição da imagem");
+            imageModel.setDescription(description);
             imageModel.setPrograming(programingModelOptional.get());
 
             imageService.save(imageModel);

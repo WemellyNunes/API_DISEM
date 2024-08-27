@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -181,18 +182,34 @@ public class ReportService {
                 }
 
                 List<ImageModel> imageModels = imageRepository.findByProgramingId(programing.getId());
+
+                Paragraph image = new Paragraph("Memorial fotografico")
+                        .setFont(boldFont)
+                        .setFontSize(13);
+                document.add(image);
+
+                LineSeparator l3 = new LineSeparator(new SolidLine());
+                l3.setWidth(UnitValue.createPercentValue(100));
+                l3.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                document.add(l3);
+
+                document.add(new Paragraph("\n"));
+
                 for (ImageModel imageModel : imageModels) {
-                    Paragraph image = new Paragraph("Memorial fotografico")
-                            .setFont(boldFont)
-                            .setFontSize(13);
-                    document.add(image);
 
-                    LineSeparator l3 = new LineSeparator(new SolidLine());
-                    l3.setWidth(UnitValue.createPercentValue(100));
-                    l3.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    document.add(l3);
+                    String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
 
-                    document.add(new Paragraph("Imagens: \n" + imageModel.getNameFile()));
+                    try {
+                        ImageData imageData = ImageDataFactory.create(imagePath);
+                        Image pdfImage = new Image(imageData);
+
+                        pdfImage.setWidth(UnitValue.createPercentValue(60));
+
+                        document.add(pdfImage);
+                    } catch (IOException e) {
+                        document.add(new Paragraph("Falha ao carregar a imagem: " + imageModel.getNameFile()));
+                    }
+
                     document.add(new Paragraph("Descrição: " + imageModel.getDescription()));
 
                     document.add(new Paragraph("\n"));
