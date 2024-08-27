@@ -15,7 +15,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @RestController
@@ -29,17 +34,40 @@ public class DocumentController {
     OrderServiceService orderServiceService;
 
     @PostMapping("/documents")
-    public ResponseEntity<Object> createDocument(@RequestBody @Valid DocumentDTO documentDTO) {
-        Optional<OrderServiceModel> orderServiceModelOptional = orderServiceService.findById(documentDTO.getOrderService_id());
+    public ResponseEntity<Object> createDocument(@RequestParam("file") MultipartFile file, @RequestParam("orderServiceId") Long orderServiceId) {
+
+        if (file.isEmpty()){
+            return new ResponseEntity<>("nenhum arquivo enviado", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<OrderServiceModel> orderServiceModelOptional = orderServiceService.findById(orderServiceId);
 
         if (orderServiceModelOptional.isEmpty()) {
-            return new ResponseEntity<>("Ordem de serviço não enocntrada", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
         }
-        else {
-            var document = new DocumentModel();
-            BeanUtils.copyProperties(documentDTO, document);
-            document.setOrderService(orderServiceModelOptional.get());
-            return new ResponseEntity<>(documentService.save(document), HttpStatus.CREATED);
+
+        try {
+            String uploadDir = System.getProperty("user.dir") + "/uploads/documents/";
+
+            File uploadDirFile = new File(uploadDir);
+            if (!uploadDirFile.exists()) {
+                uploadDirFile.mkdirs();
+            }
+
+            String fileName = file.getOriginalFilename();
+            Path path = Paths.get(uploadDir + fileName);
+            Files.write(path, file.getBytes());
+
+            String documentPath = "/uploads/documents/" + fileName;
+            DocumentModel documentModel = new DocumentModel();
+            documentModel.setNameFile(documentPath);
+            documentModel.setDescription("x");
+            documentModel.setOrderService(orderServiceModelOptional.get());
+
+            documentService.save(documentModel);
+            return new ResponseEntity<>(documentModel, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

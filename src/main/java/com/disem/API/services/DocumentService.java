@@ -22,6 +22,7 @@ public class DocumentService {
         return documentRepository.save(documentModel);
     }
 
+    @Transactional
     public Optional<DocumentModel> findById(Long id) {
         return documentRepository.findById(id);
     }
