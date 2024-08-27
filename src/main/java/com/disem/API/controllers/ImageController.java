@@ -35,9 +35,16 @@ public class ImageController {
 
     @PostMapping("/images")
     public ResponseEntity<Object> createImage(@RequestParam("file")MultipartFile file, @RequestParam("programingId") Long programingId) {
+
        if (file.isEmpty()){
            return new ResponseEntity<>("nenhum arquivo enviado", HttpStatus.BAD_REQUEST);
        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
+            return new ResponseEntity<>("Apenas arquivos JPG ou PNG são permitidos", HttpStatus.BAD_REQUEST);
+        }
+
         Optional<ProgramingModel> programingModelOptional = programingService.findById(programingId);
 
         if (programingModelOptional.isEmpty()) {
@@ -51,7 +58,6 @@ public class ImageController {
             if (!uploadDirFile.exists()) {
                 uploadDirFile.mkdirs();
             }
-
             String fileName = file.getOriginalFilename();
             Path path = Paths.get(uploadDir + fileName);
             Files.write(path, file.getBytes());
