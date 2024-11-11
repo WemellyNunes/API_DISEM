@@ -1,13 +1,11 @@
 package com.disem.API.models;
 
 import com.disem.API.enums.OrdersServices.*;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ public class OrderServiceModel {
     @NotBlank
     private String requester;
 
-    @NotBlank
+
     private String contact;
 
     @NotNull
@@ -65,8 +63,6 @@ public class OrderServiceModel {
 
     private String observation;
 
-    @Enumerated(EnumType.STRING)
-    private ImpactEnum impact;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -93,8 +89,5 @@ public class OrderServiceModel {
     @OneToMany(mappedBy = "orderService")
     private List<DocumentModel> documents = new ArrayList<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "orderService")
-    private List<DispatchOSModel> dispatchOS = new ArrayList<>();
 
 }

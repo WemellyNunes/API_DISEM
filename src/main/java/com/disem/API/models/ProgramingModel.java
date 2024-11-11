@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -54,4 +53,9 @@ public class ProgramingModel {
     @JsonIgnore
     @OneToMany(mappedBy = "programing")
     private List<ImageModel> images;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "programing")
+    private List<FinalizeModel> finalizeModels = new ArrayList<>();
 }
+

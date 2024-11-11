@@ -7,7 +7,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class DispatchOSDTO {
+public class FinalizeDTO {
     @NotBlank
     private String content;
 
@@ -15,5 +15,5 @@ public class DispatchOSDTO {
     private LocalDate dateContent;
 
     @NotNull
-    private Long orderService_id;
+    private Long programing_id;
 }

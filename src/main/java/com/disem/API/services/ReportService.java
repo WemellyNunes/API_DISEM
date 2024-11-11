@@ -9,9 +9,7 @@ import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
@@ -21,21 +19,14 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-import com.itextpdf.signatures.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.cert.Certificate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import com.itextpdf.kernel.pdf.StampingProperties;
 
 
 @Service
@@ -54,13 +45,13 @@ public class ReportService {
     ProgramingRepository programingRepository;
 
     @Autowired
-    ChecklistCorrectiveRepository checklistCorrectiveRepository;
-
-    @Autowired
     ImageRepository imageRepository;
 
     @Autowired
-    DispatchOSRepository dispatchOSRepository;
+    FinalizeRepository dispatchOSRepository;
+
+    @Autowired
+    private FinalizeRepository finalizeRepository;
 
     public byte[] generateReport(Long id) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -163,24 +154,6 @@ public class ReportService {
 
                 document.add(new Paragraph("\n"));
 
-                List<ChecklistCorrectiveModel> correctiveModels = checklistCorrectiveRepository.findByProgramingId(programing.getId());
-                for (ChecklistCorrectiveModel correctiveModel : correctiveModels) {
-                    Paragraph check = new Paragraph("Relato de execução")
-                            .setFont(boldFont)
-                            .setFontSize(13);
-                    document.add(check);
-
-                    LineSeparator l2 = new LineSeparator(new SolidLine());
-                    l2.setWidth(UnitValue.createPercentValue(100));
-                    l2.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    document.add(l2);
-
-                    document.add(new Paragraph("Tratativa/Solucão: " + correctiveModel.getTreatment()));
-                    document.add(new Paragraph("Data do registro: " + correctiveModel.getCreationDate().format(formatter)));
-
-                    document.add(new Paragraph("\n"));
-                }
-
                 List<ImageModel> imageModels = imageRepository.findByProgramingId(programing.getId());
 
                 Paragraph image = new Paragraph("Memorial fotografico")
@@ -218,7 +191,7 @@ public class ReportService {
             }
 
             if (os.getStatus() == StatusEnum.FINALIZADO) {
-                List<DispatchOSModel> dispatches = dispatchOSRepository.findByOrderServiceId(id);
+                List<FinalizeModel> dispatches = finalizeRepository.findByProgramingId(id);
 
                 if (!dispatches.isEmpty()) {
                     Paragraph dispatchTitle = new Paragraph("Finalização")
@@ -231,7 +204,7 @@ public class ReportService {
                     separator.setHorizontalAlignment(HorizontalAlignment.CENTER);
                     document.add(separator);
 
-                    for (DispatchOSModel dispatch : dispatches) {
+                    for (FinalizeModel dispatch : dispatches) {
                         document.add(new Paragraph("Despacho: " + dispatch.getContent()));
                         document.add(new Paragraph("Data do registro: " + dispatch.getDateContent().format(formatter)));
                     }

@@ -25,7 +25,6 @@ public class OrderServiceDTO {
     @NotBlank
     private String requester;
 
-    @NotBlank
     private String contact;
 
     @NotNull
@@ -47,8 +46,6 @@ public class OrderServiceDTO {
     private String maintenanceIndicators;
 
     private String observation;
-
-    private ImpactEnum impact;
 
     @NotNull
     private TypeTreatmentEnum typeTreatment;

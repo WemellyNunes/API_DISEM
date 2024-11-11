@@ -1,7 +1,7 @@
 package com.disem.API.services;
 
-import com.disem.API.models.DispatchOSModel;
-import com.disem.API.repositories.DispatchOSRepository;
+import com.disem.API.models.FinalizeModel;
+import com.disem.API.repositories.FinalizeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,22 +14,22 @@ import java.util.Optional;
 public class DispatchOSService {
 
     @Autowired
-    DispatchOSRepository repo;
+    FinalizeRepository repo;
 
     @Transactional
-    public DispatchOSModel save(DispatchOSModel model) {
+    public FinalizeModel save(FinalizeModel model) {
         return repo.save(model);
     }
 
-    public Page<DispatchOSModel> findAll(Pageable pageable) {
+    public Page<FinalizeModel> findAll(Pageable pageable) {
         return repo.findAll(pageable);
     }
 
-    public Optional<DispatchOSModel> findById(Long id) {
+    public Optional<FinalizeModel> findById(Long id) {
         return repo.findById(id);
     }
 
-    public void delete(DispatchOSModel model) {
+    public void delete(FinalizeModel model) {
         repo.delete(model);
     }
 }

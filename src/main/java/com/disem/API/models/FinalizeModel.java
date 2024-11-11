@@ -9,8 +9,8 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@Table(name = "TB_DISPATCH_OS")
-public class DispatchOSModel {
+@Table(name = "TB_FINALIZE")
+public class FinalizeModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +23,6 @@ public class DispatchOSModel {
     private LocalDate dateContent;
 
     @ManyToOne
-    @JoinColumn(name = "orderService_id", nullable = false)
-    private OrderServiceModel orderService;
+    @JoinColumn(name = "programing_id", nullable = false)
+    private ProgramingModel programing;
 }
