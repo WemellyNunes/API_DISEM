@@ -10,7 +10,6 @@ public class DocumentDTO {
     @NotNull
     private String nameFile;
 
-    @NotNull
     private String description;
 
     @NotNull

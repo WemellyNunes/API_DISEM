@@ -16,7 +16,7 @@ public class DocumentModel {
     @NotNull
     private String nameFile;
 
-    @NotNull
+
     private String description;
 
     @ManyToOne

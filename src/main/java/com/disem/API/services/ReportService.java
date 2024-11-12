@@ -130,9 +130,9 @@ public class ReportService {
 
             document.add(new Paragraph("\n"));
 
-            List<ProgramingModel> programings = programingRepository.findByOrderServiceId(id);
-            for (ProgramingModel programing : programings) {
-
+            ProgramingModel activePrograming = programingRepository.findByOrderServiceIdAndActive(id, "true");
+            if (activePrograming != null) {
+                // Adiciona as informações da programação ativa no relatório
                 Paragraph prog = new Paragraph("Programação")
                         .setFont(boldFont)
                         .setFontSize(13);
@@ -143,78 +143,82 @@ public class ReportService {
                 l1.setHorizontalAlignment(HorizontalAlignment.CENTER);
                 document.add(l1);
 
-                document.add(new Paragraph("Id: " + programing.getId()));
-                document.add(new Paragraph("Data programada: " + programing.getDatePrograming().format(formatter)));
-                document.add(new Paragraph("Horario programado: " + programing.getTime()));
-                document.add(new Paragraph("Encarregado: " + programing.getOverseer()));
-                document.add(new Paragraph("Profissionais: " + programing.getWorker()));
-                document.add(new Paragraph("Cústo estimado: " + programing.getCost()));
-                document.add(new Paragraph("Observação: " + programing.getObservation()));
-                document.add(new Paragraph("Data do registro: " + programing.getCreationDate().format(formatter)));
+                document.add(new Paragraph("Data programada: " + activePrograming.getDatePrograming().format(formatter)));
+                document.add(new Paragraph("Horario programado: " + activePrograming.getTime()));
+                document.add(new Paragraph("Encarregado: " + activePrograming.getOverseer()));
+                document.add(new Paragraph("Profissionais: " + activePrograming.getWorker()));
+                document.add(new Paragraph("Observação: " + activePrograming.getObservation()));
+                document.add(new Paragraph("Data do registro: " + activePrograming.getCreationDate().format(formatter)));
 
                 document.add(new Paragraph("\n"));
 
-                List<ImageModel> imageModels = imageRepository.findByProgramingId(programing.getId());
+                List<ImageModel> imageModels = imageRepository.findByProgramingId(activePrograming.getId());
 
-                Paragraph image = new Paragraph("Memorial fotografico")
-                        .setFont(boldFont)
-                        .setFontSize(13);
-                document.add(image);
+                if (!imageModels.isEmpty()) {
+                    Paragraph image = new Paragraph("Memorial fotográfico")
+                            .setFont(boldFont)
+                            .setFontSize(13);
+                    document.add(image);
 
-                LineSeparator l3 = new LineSeparator(new SolidLine());
-                l3.setWidth(UnitValue.createPercentValue(100));
-                l3.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                document.add(l3);
-
-                document.add(new Paragraph("\n"));
-
-                for (ImageModel imageModel : imageModels) {
-
-                    String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
-
-                    try {
-                        ImageData imageData = ImageDataFactory.create(imagePath);
-                        Image pdfImage = new Image(imageData);
-
-                        pdfImage.setWidth(UnitValue.createPercentValue(60));
-
-                        document.add(pdfImage);
-                    } catch (IOException e) {
-                        document.add(new Paragraph("Falha ao carregar a imagem: " + imageModel.getNameFile()));
-                    }
-
-                    document.add(new Paragraph("Descrição: " + imageModel.getDescription()));
+                    LineSeparator l3 = new LineSeparator(new SolidLine());
+                    l3.setWidth(UnitValue.createPercentValue(100));
+                    l3.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                    document.add(l3);
 
                     document.add(new Paragraph("\n"));
 
+                    // Log para verificação do caminho da imagem
+                    System.out.println("Imagens encontradas, processando...");
+
+                    for (ImageModel imageModel : imageModels) {
+                        String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
+
+                        // Verificar o caminho da imagem
+                        System.out.println("Caminho da imagem: " + imagePath);
+
+                        try {
+                            ImageData imageData = ImageDataFactory.create(imagePath);
+                            Image pdfImage = new Image(imageData);
+
+                            pdfImage.setWidth(UnitValue.createPercentValue(60));
+                            document.add(pdfImage);
+                        } catch (IOException e) {
+                            document.add(new Paragraph("Falha ao carregar a imagem: " + imageModel.getNameFile()));
+                        }
+
+                        document.add(new Paragraph("Descrição: " + imageModel.getDescription()));
+                        document.add(new Paragraph("\n"));
+                    }
+
+                } else {
+                    System.out.println("Nenhuma imagem encontrada.");
                 }
-            }
 
-            if (os.getStatus() == StatusEnum.FINALIZADO) {
-                List<FinalizeModel> dispatches = finalizeRepository.findByProgramingId(id);
+                if (os.getStatus() == StatusEnum.FINALIZADO) {
+                    List<FinalizeModel> dispatches = finalizeRepository.findByProgramingId(activePrograming.getId());
 
-                if (!dispatches.isEmpty()) {
-                    Paragraph dispatchTitle = new Paragraph("Finalização")
-                            .setFont(boldFont)
-                            .setFontSize(13);
-                    document.add(dispatchTitle);
+                    if (!dispatches.isEmpty()) {
+                        Paragraph dispatchTitle = new Paragraph("Finalização")
+                                .setFont(boldFont)
+                                .setFontSize(13);
+                        document.add(dispatchTitle);
 
-                    LineSeparator separator = new LineSeparator(new SolidLine());
-                    separator.setWidth(UnitValue.createPercentValue(100));
-                    separator.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    document.add(separator);
+                        LineSeparator separator = new LineSeparator(new SolidLine());
+                        separator.setWidth(UnitValue.createPercentValue(100));
+                        separator.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                        document.add(separator);
 
-                    for (FinalizeModel dispatch : dispatches) {
-                        document.add(new Paragraph("Despacho: " + dispatch.getContent()));
-                        document.add(new Paragraph("Data do registro: " + dispatch.getDateContent().format(formatter)));
+                        for (FinalizeModel dispatch : dispatches) {
+                            document.add(new Paragraph("Observação final: " + dispatch.getContent()));
+                            document.add(new Paragraph("Data do registro: " + dispatch.getDateContent().format(formatter)));
+                        }
                     }
                 }
+            } else {
+                document.add(new Paragraph("Nenhuma programação ativa encontrada para esta ordem de serviço."));
             }
 
-            //add assinatura
-
             document.close();
-
 
         } catch (Exception e) {
             e.printStackTrace();
