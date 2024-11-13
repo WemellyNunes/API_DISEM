@@ -48,18 +48,15 @@ public class OrderServiceDTO {
     private String observation;
 
     @NotNull
-    private TypeTreatmentEnum typeTreatment;
+    private String typeTreatment;
 
     @NotNull
     private StatusEnum status;
 
-    @NotNull
     private LocalDate date;
 
-    @NotNull
     private LocalDate modificationDate;
 
-    @NotBlank
     private String openDays;
 
 }

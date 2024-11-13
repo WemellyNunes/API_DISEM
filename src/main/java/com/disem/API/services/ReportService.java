@@ -119,13 +119,11 @@ public class ReportService {
             document.add(new Paragraph("Origem: " + os.getOrigin()));
             document.add(new Paragraph("Solicitante: " + os.getRequester()));
             document.add(new Paragraph("Unidade do solicitante: " + os.getUnit()));
-            document.add(new Paragraph("Contato: " + os.getContact()));
             document.add(new Paragraph("Objeto de preparo: " + os.getPreparationObject()));
             document.add(new Paragraph("Tipo de manutenção: " + os.getTypeMaintenance()));
             document.add(new Paragraph("Sistema: " + os.getSystem()));
             document.add(new Paragraph("Unidade da manutenção: " + os.getMaintenanceUnit()));
             document.add(new Paragraph("Campus: " + os.getCampus()));
-            document.add(new Paragraph("Observação: " + os.getObservation()));
             document.add(new Paragraph("Data do registro: " + os.getDate().format(formatter)));
 
             document.add(new Paragraph("\n"));

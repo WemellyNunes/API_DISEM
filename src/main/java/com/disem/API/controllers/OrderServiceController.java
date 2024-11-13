@@ -21,6 +21,7 @@ import java.util.Optional;
 
 
 @RestController
+@RequestMapping("api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class OrderServiceController {
 
@@ -28,7 +29,7 @@ public class OrderServiceController {
     OrderServiceService orderServiceService;
 
 
-    @PostMapping("/orders")
+    @PostMapping("/serviceOrder")
     public ResponseEntity<Object> saveOrderService(@RequestBody @Valid OrderServiceDTO orderServiceDTO){
         var orderServiceModel = new OrderServiceModel();
 
@@ -37,7 +38,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("/orders")
+    @GetMapping("/serviceOrders")
     public ResponseEntity<Object> getAllOrderService(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         Page<OrderServiceModel> ordersPage = orderServiceService.findAll(pageable);
         if (ordersPage.isEmpty()){
@@ -47,7 +48,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("/orders/{id}")
+    @GetMapping("/serviceOrder/{id}")
     public ResponseEntity<Object> getOneOrderService(@PathVariable(value = "id") Long id) {
         Optional<OrderServiceModel> orderService = orderServiceService.findById(id);
         if (orderService.isEmpty()){
@@ -57,7 +58,7 @@ public class OrderServiceController {
     }
 
 
-    @DeleteMapping("/orders/{id}")
+    @DeleteMapping("/serviceOrder/{id}")
     public ResponseEntity<Object> deleteOneOrderService(@PathVariable(value = "id") Long id) {
         Optional<OrderServiceModel> orderService = orderServiceService.findById(id);
         if (orderService.isEmpty()){
@@ -70,7 +71,7 @@ public class OrderServiceController {
     }
 
 
-    @PutMapping("/orders/{id}")
+    @PutMapping("/serviceOrder/{id}")
     public ResponseEntity<Object> updateOrderService(@PathVariable(value = "id") Long id, @RequestBody @Valid OrderServiceDTO orderServiceDTO) {
         Optional<OrderServiceModel> orderServiceModelOptional = orderServiceService.findById(id);
 
@@ -93,10 +94,8 @@ public class OrderServiceController {
             orderServiceModel.setMaintenanceIndicators(orderServiceDTO.getMaintenanceIndicators());
             orderServiceModel.setObservation(orderServiceDTO.getObservation());
             orderServiceModel.setTypeTreatment(orderServiceDTO.getTypeTreatment());
-            orderServiceModel.setStatus(orderServiceDTO.getStatus());
             orderServiceModel.setDate(orderServiceDTO.getDate());
             orderServiceModel.setModificationDate(orderServiceDTO.getModificationDate());
-            orderServiceModel.setOpenDays(orderServiceDTO.getOpenDays());
 
             return ResponseEntity.status(HttpStatus.OK).body(orderServiceService.save(orderServiceModel));
         }
@@ -104,7 +103,7 @@ public class OrderServiceController {
 
     //CONSULTAS ESPECIFICAS
 
-    @GetMapping("/orders/requisition/{requisition}")
+    @GetMapping("/serviceOrder/requisition/{requisition}")
     public ResponseEntity<Object> getByRequisition(@PathVariable(value = "requisition") Integer requisition){
         Optional<OrderServiceModel> orderServiceModelOptional = orderServiceService.findByRequisition(requisition);
         if (orderServiceModelOptional.isEmpty()){
@@ -116,7 +115,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("/orders/origin/{origin}")
+    @GetMapping("/serviceOrder/origin/{origin}")
     public ResponseEntity<Object> getByOrigin(@PathVariable(value = "origin") OriginEnum origin){
         List<OrderServiceModel> orderServiceModelList = orderServiceService.findByOrigin(origin);
         if (orderServiceModelList.isEmpty()){
@@ -126,7 +125,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("/orders/status/{status}")
+    @GetMapping("/serviceOrder/status/{status}")
     public ResponseEntity<Object> getByStatus(@PathVariable(value = "status")StatusEnum status){
         List<OrderServiceModel> orderServiceModelList = orderServiceService.findByStatus(status);
         if (orderServiceModelList.isEmpty()){
@@ -136,7 +135,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("/orders/requester/{requester}")
+    @GetMapping("/serviceOrder/requester/{requester}")
     public ResponseEntity<Object> getByRequester(@PathVariable(value = "requester") String requester){
         List<OrderServiceModel> orderServiceModelList = orderServiceService.findByRequester(requester);
         if (orderServiceModelList.isEmpty()){
@@ -146,7 +145,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("/orders/unit/{unit}")
+    @GetMapping("/serviceOrder/unit/{unit}")
     public ResponseEntity<Object> getByUnit(@PathVariable(value = "unit") String unit){
         List<OrderServiceModel> orderServiceModelList = orderServiceService.findByUnit(unit);
         if (orderServiceModelList.isEmpty()){
@@ -156,7 +155,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("/orders/system/{system}")
+    @GetMapping("/serviceOrder/system/{system}")
     public ResponseEntity<Object> getBySystem(@PathVariable(value = "system") SystemEnum system){
         List<OrderServiceModel> orderServiceModelList = orderServiceService.findBySystem(system);
         if (orderServiceModelList.isEmpty()){
@@ -166,7 +165,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("/orders/classification/{classification}")
+    @GetMapping("/serviceOrder/classification/{classification}")
     public ResponseEntity<Object> getByClass(@PathVariable(value = "classification")ClassEnum classification){
         List<OrderServiceModel> orderServiceModelList = orderServiceService.findByClassification(classification);
         if (orderServiceModelList.isEmpty()){
@@ -176,7 +175,7 @@ public class OrderServiceController {
     }
 
 
-    @GetMapping("orders/typeMaintenance/{type}")
+    @GetMapping("serviceOrder/typeMaintenance/{type}")
     public ResponseEntity<Object> getByType(@PathVariable(value = "type")TypeMaintenanceEnum type){
         List<OrderServiceModel> orderServiceModelList = orderServiceService.findByTypeMaintenance(type);
         if (orderServiceModelList.isEmpty()){

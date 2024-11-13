@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DocumentController {
 
@@ -33,7 +34,7 @@ public class DocumentController {
     @Autowired
     OrderServiceService orderServiceService;
 
-    @PostMapping("/documents")
+    @PostMapping("/uploadDocument")
     public ResponseEntity<Object> createDocument(@RequestParam("file") MultipartFile file, @RequestParam("orderServiceId") Long orderServiceId) {
 
         if (file.isEmpty()){
@@ -83,7 +84,7 @@ public class DocumentController {
     }
 
 
-    @GetMapping("/documents/{id}")
+    @GetMapping("/document/{id}")
     public ResponseEntity<Object> findById(@PathVariable(value = "id") Long id) {
         Optional<DocumentModel> documentOptional = documentService.findById(id);
 
@@ -94,7 +95,7 @@ public class DocumentController {
     }
 
 
-    @DeleteMapping("/documents/{id}")
+    @DeleteMapping("/document/{id}")
     public ResponseEntity<Object> deleteDocument(@PathVariable(value = "id") Long id) {
         Optional<DocumentModel> documentOptional = documentService.findById(id);
 
@@ -106,7 +107,7 @@ public class DocumentController {
     }
 
 
-    @PutMapping("/documents/{id}")
+    @PutMapping("/document/{id}")
     public ResponseEntity<Object> updateDocument(@PathVariable(value = "id") Long id, @RequestBody @Valid DocumentDTO documentDTO) {
         Optional<DocumentModel> documentOptional = documentService.findById(id);
 

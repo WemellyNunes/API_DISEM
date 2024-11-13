@@ -24,6 +24,7 @@ import java.util.Optional;
 
 
 @RestController
+@RequestMapping("api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ImageController {
 
@@ -33,7 +34,7 @@ public class ImageController {
     @Autowired
     ProgramingService programingService;
 
-    @PostMapping("/images")
+    @PostMapping("/uploadFile")
     public ResponseEntity<Object> createImage(
             @RequestParam("file")MultipartFile file,
             @RequestParam("programingId") Long programingId,
@@ -85,7 +86,7 @@ public class ImageController {
     }
 
 
-    @GetMapping("/images")
+    @GetMapping("/files")
     public ResponseEntity<Object> getAllImages(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<ImageModel> imageModelPage = imageService.findAll(pageable);
 
@@ -96,7 +97,7 @@ public class ImageController {
     }
 
 
-    @GetMapping("/image/{id}")
+    @GetMapping("/file/{id}")
     public ResponseEntity<Object> getOneImage(@PathVariable(value = "id") Long id) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
 
@@ -107,7 +108,7 @@ public class ImageController {
     }
 
 
-    @DeleteMapping("/image/{id}")
+    @DeleteMapping("/file/{id}")
     public ResponseEntity<Object> deleteImage(@PathVariable(value = "id") Long id) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
 
@@ -119,7 +120,7 @@ public class ImageController {
     }
 
 
-    @PutMapping("/image/{id}")
+    @PutMapping("/file/{id}")
     public ResponseEntity<Object> updateImage(@PathVariable(value = "id") Long id, @RequestBody @Valid ImageDTO imageDTO) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
         if (imageModelOptional.isEmpty()) {

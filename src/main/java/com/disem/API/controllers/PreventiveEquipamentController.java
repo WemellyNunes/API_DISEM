@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PreventiveEquipamentController {
 
@@ -29,7 +30,7 @@ public class PreventiveEquipamentController {
     @Autowired
     OrderServiceRepository orderServiceRepository;
 
-    @PostMapping("/preventiveEquipament")
+    @PostMapping("/equipment")
     public ResponseEntity<Object> savePreventiveSystem(@RequestBody @Valid PreventiveEquipamentDTO preventiveEquipamentDTO) {
         var preventiveEquipament = new PreventiveEquipamentModel();
 
@@ -44,7 +45,7 @@ public class PreventiveEquipamentController {
     }
 
 
-    @GetMapping("/preventiveEquipament")
+    @GetMapping("/equipments")
     public ResponseEntity<Object> getAllPreventiveEquipament(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<PreventiveEquipamentModel> preventiveEquipamentModelPage = preventiveEquipamentService.findAll(pageable);
 
@@ -55,7 +56,7 @@ public class PreventiveEquipamentController {
     }
 
 
-    @GetMapping("/preventiveEquipament/{id}")
+    @GetMapping("/equipment/{id}")
     public ResponseEntity<Object> getPreventiveEquipamentById(@PathVariable(value = "id") Long id) {
         Optional<PreventiveEquipamentModel> preventiveEquipamentModel = preventiveEquipamentService.findById(id);
 
@@ -66,7 +67,7 @@ public class PreventiveEquipamentController {
     }
 
 
-    @DeleteMapping("/preventiveEquipament/{id}")
+    @DeleteMapping("/equipment/{id}")
     public ResponseEntity<Object> deletePreventiveEquipament(@PathVariable(value = "id") Long id) {
         Optional<PreventiveEquipamentModel> preventiveEquipamentModel = preventiveEquipamentService.findById(id);
 
@@ -78,7 +79,7 @@ public class PreventiveEquipamentController {
     }
 
 
-    @PutMapping("preventiveEquipament/{id}")
+    @PutMapping("equipment/{id}")
     public ResponseEntity<Object> updatePreventiveEquipament(@PathVariable(value = "id") Long id, @RequestBody @Valid PreventiveEquipamentDTO preventiveEquipamentDTO){
         Optional<PreventiveEquipamentModel> preventiveEquipamentModel = preventiveEquipamentService.findById(id);
 

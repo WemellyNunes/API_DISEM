@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class FinalizeController {
 
@@ -28,7 +29,7 @@ public class FinalizeController {
     @Autowired
     ProgramingService programingService;
 
-    @PostMapping("/finished")
+    @PostMapping("/finish")
     public ResponseEntity<Object> createFinished(@RequestBody @Valid FinalizeDTO finalizeDTO){
         Optional<ProgramingModel> programingModel = programingService.findById(finalizeDTO.getPrograming_id());
 
@@ -43,7 +44,7 @@ public class FinalizeController {
         }
     }
 
-    @GetMapping("/dispatches")
+    @GetMapping("/finished")
     public ResponseEntity<Object> getAllDispatches(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC)Pageable pageable){
         Page<FinalizeModel> dispatchOSModelPage = dispatchOSService.findAll(pageable);
 
@@ -53,7 +54,7 @@ public class FinalizeController {
         return new ResponseEntity<>(dispatchOSModelPage, HttpStatus.OK);
     }
 
-    @GetMapping("/dispatch/{id}")
+    @GetMapping("/finished/{id}")
     public ResponseEntity<Object> getOneDispatch(@PathVariable(value = "id") Long id){
         Optional<FinalizeModel> dispatchOSModelOptional = dispatchOSService.findById(id);
 
@@ -63,7 +64,7 @@ public class FinalizeController {
         return new ResponseEntity<>(dispatchOSModelOptional.get(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/dispatch/{id}")
+    @DeleteMapping("/finished/{id}")
     public ResponseEntity<Object> deleteDispatch(@PathVariable(value = "id") Long id){
         Optional<FinalizeModel> dispatchOSModelOptional = dispatchOSService.findById(id);
 
@@ -76,7 +77,7 @@ public class FinalizeController {
         }
     }
 
-    @PutMapping("/dispatch/{id}")
+    @PutMapping("/finished/{id}")
     public ResponseEntity<Object> updateDispatch(@PathVariable(value = "id") Long id, @RequestBody @Valid FinalizeDTO dispatchOSDTO){
         Optional<FinalizeModel> dispatchOSModelOptional = dispatchOSService.findById(id);
 

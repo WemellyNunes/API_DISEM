@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProgramingController {
 
@@ -28,7 +29,7 @@ public class ProgramingController {
     @Autowired
     OrderServiceService orderServiceService;
 
-    @PostMapping("/programings")
+    @PostMapping("/programing")
     public ResponseEntity<Object> createPrograming(@RequestBody @Valid ProgramingDTO programingDTO){
         Optional<OrderServiceModel> orderServiceModelOptional = orderServiceService.findById(programingDTO.getOrderService_id());
 
@@ -44,7 +45,7 @@ public class ProgramingController {
     }
 
 
-    @GetMapping("/programings")
+    @GetMapping("/programing")
     public ResponseEntity<Object> getAllPrograming(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         Page<ProgramingModel> programingModelPage = programingService.findAll(pageable);
         if (programingModelPage.isEmpty()){
@@ -54,7 +55,7 @@ public class ProgramingController {
     }
 
 
-    @GetMapping("/programings/{id}")
+    @GetMapping("/programing/{id}")
     public ResponseEntity<Object> getOnePrograming(@PathVariable(value = "id") Long id) {
         Optional<ProgramingModel> programingModelOptional = programingService.findById(id);
         if (programingModelOptional.isEmpty()){

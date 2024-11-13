@@ -36,7 +36,6 @@ public class OrderServiceModel {
     @NotBlank
     private String requester;
 
-
     private String contact;
 
     @NotNull
@@ -65,20 +64,16 @@ public class OrderServiceModel {
 
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private TypeTreatmentEnum typeTreatment;
+    private String typeTreatment;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
 
-    @NotNull
     private LocalDate date;
 
-    @NotNull
     private LocalDate modificationDate;
 
-    @NotBlank
     private String openDays;
 
     @JsonIgnore

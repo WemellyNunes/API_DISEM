@@ -23,7 +23,7 @@ public class ReportController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "relatorio_os" + id + ".pdf");
+        headers.setContentDispositionFormData("attachment", "relatorio_os_" + id + ".pdf");
 
         return ResponseEntity.ok().headers(headers).body(pdfContents);
     }

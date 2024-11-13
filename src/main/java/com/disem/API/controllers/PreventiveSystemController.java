@@ -30,7 +30,7 @@ public class PreventiveSystemController {
     @Autowired
     OrderServiceRepository orderServiceRepository;
 
-    @PostMapping("/preventiveSystem")
+    @PostMapping("/system")
     public ResponseEntity<Object> savePreventiveSystem(@RequestBody @Valid PreventiveSystemDTO preventiveSystemDTO) {
         var preventiveSystem = new PreventiveSystemModel();
 
@@ -46,7 +46,7 @@ public class PreventiveSystemController {
     }
 
 
-    @GetMapping("/preventiveSystem")
+    @GetMapping("/systems")
     public ResponseEntity<Object> getAllPreventiveSystem(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC)Pageable pageable) {
         Page<PreventiveSystemModel> preventiveSystemModelPage = preventiveSystemService.findAll(pageable);
         if (preventiveSystemModelPage.isEmpty()){
@@ -56,7 +56,7 @@ public class PreventiveSystemController {
     }
 
 
-    @GetMapping("/preventiveSystem/{id}")
+    @GetMapping("/system/{id}")
     public ResponseEntity<Object> getOnePreventiveSystem(@PathVariable(value = "id") Long id) {
         Optional<PreventiveSystemModel> preventiveSystem = preventiveSystemService.findById(id);
         if (preventiveSystem.isEmpty()){
@@ -66,7 +66,7 @@ public class PreventiveSystemController {
     }
 
 
-    @DeleteMapping("/preventiveSystem/{id}")
+    @DeleteMapping("/system/{id}")
     public ResponseEntity<Object> deletePreventiveSystem(@PathVariable(value = "id") Long id) {
         Optional<PreventiveSystemModel> preventiveSystem = preventiveSystemService.findById(id);
         if (preventiveSystem.isEmpty()){
@@ -77,7 +77,7 @@ public class PreventiveSystemController {
     }
 
 
-    @PutMapping("/preventiveSystem/{id}")
+    @PutMapping("/system/{id}")
     public ResponseEntity<Object> updatePreventiveSystem(@PathVariable(value = "id") Long id, @RequestBody PreventiveSystemDTO preventiveSystemDTO) {
         Optional<PreventiveSystemModel> preventiveSystem = preventiveSystemService.findById(id);
 
