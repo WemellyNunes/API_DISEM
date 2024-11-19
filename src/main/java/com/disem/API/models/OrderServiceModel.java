@@ -59,9 +59,7 @@ public class OrderServiceModel {
     @NotBlank
     private String maintenanceIndicators;
 
-
     private String observation;
-
 
     @NotNull
     private String typeTreatment;
