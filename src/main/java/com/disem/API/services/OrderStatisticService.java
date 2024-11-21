@@ -66,7 +66,7 @@ public class OrderStatisticService {
         long finalizedCount = orderServiceRepository.countByOriginAndStatus(origin, status2);
 
         Map<String, Long> ordersSipac = new HashMap<>();
-        ordersSipac.put("APROVADAS", toAttendCount);
+        ordersSipac.put("A_ATENDER", toAttendCount);
         ordersSipac.put("FINALIZADAS", finalizedCount);
         return ordersSipac;
     }

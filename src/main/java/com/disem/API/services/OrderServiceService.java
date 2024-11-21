@@ -27,9 +27,10 @@ public class OrderServiceService {
         return orderServiceRepository.findById(id);
     }
 
-    public Page<OrderServiceModel> findAll(Pageable pageable) {
-        return orderServiceRepository.findAll(pageable);
+    public List<OrderServiceModel> findAll() {
+        return orderServiceRepository.findAll();
     }
+
 
     public void delete(OrderServiceModel orderServiceModel){
         orderServiceRepository.delete(orderServiceModel);

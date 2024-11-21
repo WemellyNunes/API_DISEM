@@ -39,12 +39,12 @@ public class OrderServiceController {
 
 
     @GetMapping("/serviceOrders")
-    public ResponseEntity<Object> getAllOrderService(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
-        Page<OrderServiceModel> ordersPage = orderServiceService.findAll(pageable);
-        if (ordersPage.isEmpty()){
-            return new ResponseEntity<>("Ordens de serviço não encontrado", HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> getAllOrderService() {
+        List<OrderServiceModel> ordersList = orderServiceService.findAll();
+        if (ordersList.isEmpty()) {
+            return new ResponseEntity<>("Ordens de serviço não encontradas", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(ordersPage, HttpStatus.OK);
+        return new ResponseEntity<>(ordersList, HttpStatus.OK);
     }
 
 
