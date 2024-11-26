@@ -15,7 +15,7 @@ public class ProgramingDTO {
     private LocalDate datePrograming;
 
     @NotNull
-    private LocalTime time;
+    private String time;
 
     @NotBlank
     private String overseer;
@@ -28,14 +28,10 @@ public class ProgramingDTO {
 
     private String observation;
 
-    @NotNull
     private LocalDate creationDate;
 
-    @NotNull
     private LocalDate modificationDate;
 
-    @NotBlank
-    private String delayedDays;
 
     private String active;
 

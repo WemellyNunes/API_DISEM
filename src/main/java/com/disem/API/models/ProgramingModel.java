@@ -22,7 +22,7 @@ public class ProgramingModel {
     private LocalDate datePrograming;
 
     @NotNull
-    private LocalTime time;
+    private String time;
 
     @NotBlank
     private String overseer;
@@ -35,14 +35,9 @@ public class ProgramingModel {
 
     private String observation;
 
-    @NotNull
     private LocalDate creationDate;
 
-    @NotNull
     private LocalDate modificationDate;
-
-    @NotBlank
-    private String delayedDays;
 
     private String active;
 

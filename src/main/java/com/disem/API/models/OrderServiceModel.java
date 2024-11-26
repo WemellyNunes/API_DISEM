@@ -64,7 +64,6 @@ public class OrderServiceModel {
     @NotNull
     private String typeTreatment;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
 
@@ -81,6 +80,5 @@ public class OrderServiceModel {
     @JsonIgnore
     @OneToMany(mappedBy = "orderService")
     private List<DocumentModel> documents = new ArrayList<>();
-
 
 }

@@ -3,6 +3,7 @@ package com.disem.API.controllers;
 import com.disem.API.dtos.OrderServiceDTO;
 import com.disem.API.enums.OrdersServices.*;
 import com.disem.API.models.OrderServiceModel;
+import com.disem.API.models.ProgramingModel;
 import com.disem.API.services.OrderServiceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -16,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -54,7 +57,36 @@ public class OrderServiceController {
         if (orderService.isEmpty()){
             return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(orderService.get(), HttpStatus.OK);
+
+        OrderServiceModel order = orderService.get();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", order.getId());
+        response.put("requisition", order.getRequisition());
+        response.put("origin", order.getOrigin());
+        response.put("classification", order.getClassification());
+        response.put("unit", order.getUnit());
+        response.put("requester", order.getRequester());
+        response.put("contact", order.getContact());
+        response.put("preparationObject", order.getPreparationObject());
+        response.put("typeMaintenance", order.getTypeMaintenance());
+        response.put("system", order.getSystem());
+        response.put("maintenanceUnit", order.getMaintenanceUnit());
+        response.put("campus", order.getCampus());
+        response.put("maintenanceIndicators", order.getMaintenanceIndicators());
+        response.put("observation", order.getObservation());
+        response.put("typeTreatment", order.getTypeTreatment());
+        response.put("status", order.getStatus());
+        response.put("date", order.getDate());
+        response.put("modificationDate", order.getModificationDate());
+        response.put("openDays", order.getOpenDays());
+
+        Optional<ProgramingModel> activeProg = order.getProgramings().stream()
+                .filter(programing -> "true".equals(programing.getActive())).findFirst();
+
+        activeProg.ifPresent(programing -> response.put("programingId", programing.getId()));
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

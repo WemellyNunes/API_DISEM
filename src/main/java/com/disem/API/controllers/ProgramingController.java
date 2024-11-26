@@ -1,6 +1,7 @@
 package com.disem.API.controllers;
 
 import com.disem.API.dtos.ProgramingDTO;
+import com.disem.API.enums.OrdersServices.StatusEnum;
 import com.disem.API.models.OrderServiceModel;
 import com.disem.API.models.ProgramingModel;
 import com.disem.API.services.OrderServiceService;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -40,18 +42,25 @@ public class ProgramingController {
             var programingModel = new ProgramingModel();
             BeanUtils.copyProperties(programingDTO, programingModel);
             programingModel.setOrderService(orderServiceModelOptional.get());
+
+            OrderServiceModel orderService = orderServiceModelOptional.get();
+            orderService.setStatus(StatusEnum.fromDescricao("Em atendimento"));
+            orderServiceService.save(orderService);
+
+            ProgramingModel savedPrograming = programingService.save(programingModel);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(programingService.save(programingModel));
         }
     }
 
 
     @GetMapping("/programing")
-    public ResponseEntity<Object> getAllPrograming(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
-        Page<ProgramingModel> programingModelPage = programingService.findAll(pageable);
-        if (programingModelPage.isEmpty()){
+    public ResponseEntity<Object> getAllPrograming(){
+        List<ProgramingModel> programingModelList = programingService.findAll();
+        if (programingModelList.isEmpty()){
             return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(programingModelPage, HttpStatus.OK);
+        return new ResponseEntity<>(programingModelList, HttpStatus.OK);
     }
 
 
@@ -96,7 +105,7 @@ public class ProgramingController {
             programingModel.setObservation(programingDTO.getObservation());
             programingModel.setCreationDate(programingDTO.getCreationDate());
             programingModel.setModificationDate(programingDTO.getModificationDate());
-            programingModel.setDelayedDays(programingDTO.getDelayedDays());
+
 
             return new ResponseEntity<>(programingService.save(programingModel), HttpStatus.OK);
         }
