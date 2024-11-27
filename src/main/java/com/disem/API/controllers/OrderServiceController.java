@@ -17,10 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 @RestController
@@ -47,7 +44,42 @@ public class OrderServiceController {
         if (ordersList.isEmpty()) {
             return new ResponseEntity<>("Ordens de serviço não encontradas", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(ordersList, HttpStatus.OK);
+
+        List<Map<String, Object>> responseList = new ArrayList<>();
+
+        for (OrderServiceModel order : ordersList) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", order.getId());
+            response.put("requisition", order.getRequisition());
+            response.put("origin", order.getOrigin());
+            response.put("classification", order.getClassification());
+            response.put("unit", order.getUnit());
+            response.put("requester", order.getRequester());
+            response.put("contact", order.getContact());
+            response.put("preparationObject", order.getPreparationObject());
+            response.put("typeMaintenance", order.getTypeMaintenance());
+            response.put("system", order.getSystem());
+            response.put("maintenanceUnit", order.getMaintenanceUnit());
+            response.put("campus", order.getCampus());
+            response.put("maintenanceIndicators", order.getMaintenanceIndicators());
+            response.put("observation", order.getObservation());
+            response.put("typeTreatment", order.getTypeTreatment());
+            response.put("status", order.getStatus());
+            response.put("date", order.getDate());
+            response.put("modificationDate", order.getModificationDate());
+            response.put("openDays", order.getOpenDays());
+
+            // Adiciona o `programingId` da programação ativa, se existir
+            Optional<ProgramingModel> activeProg = order.getProgramings().stream()
+                    .filter(programing -> "true".equals(programing.getActive()))
+                    .findFirst();
+            activeProg.ifPresent(programing -> response.put("programingId", programing.getId()));
+
+            responseList.add(response);
+        }
+
+        // Aqui está o ponto principal: retornar a `responseList` que contém o `programingId`
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 
 

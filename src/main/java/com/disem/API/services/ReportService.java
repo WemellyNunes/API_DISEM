@@ -53,6 +53,11 @@ public class ReportService {
     @Autowired
     private FinalizeRepository finalizeRepository;
 
+    public OrderServiceModel findOrderServiceById(Long id) {
+        return orderServiceService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Ordem de serviço não encontrada"));
+    }
+
     public byte[] generateReport(Long id) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -97,7 +102,14 @@ public class ReportService {
             OrderServiceModel os = orderServiceService.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Ordem de serviço não encontrada"));
 
-            Paragraph title = new Paragraph("Relatório n° " + os.getId())
+            String tituloRelatorio;
+            if (os.getStatus() == StatusEnum.EM_ATENDIMENTO) {
+                tituloRelatorio = "Programação n°" + os.getId();
+            } else {
+                tituloRelatorio = "Relatório n°" + os.getId();
+            }
+
+            Paragraph title = new Paragraph(tituloRelatorio)
                     .setFont(boldFont)
                     .setFontSize(14)
                     .setTextAlignment(TextAlignment.CENTER);
@@ -224,5 +236,6 @@ public class ReportService {
 
         return byteArrayOutputStream.toByteArray();
     }
+
 
 }
