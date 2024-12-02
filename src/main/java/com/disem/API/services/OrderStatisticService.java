@@ -121,5 +121,4 @@ public class OrderStatisticService {
         }
         return ordersCampusQuantities;
     }
-
 }

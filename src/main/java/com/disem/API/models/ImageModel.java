@@ -21,7 +21,11 @@ public class ImageModel {
     @NotNull
     private String description;
 
+    @Column(nullable = true)
+    private String observation;
+
     @ManyToOne
     @JoinColumn(name = "programing_id")
     private ProgramingModel programing;
+
 }

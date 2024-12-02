@@ -122,6 +122,34 @@ public class OrderServiceController {
     }
 
 
+    @PutMapping("/serviceOrder/{id}/status")
+    public ResponseEntity<Object> updateOrderServiceStatus(
+            @PathVariable(value = "id") Long id,
+            @RequestBody String descricao) {
+
+        System.out.println("Status recebido: " + descricao); // Log para verificar o valor recebido
+
+        Optional<OrderServiceModel> orderService = orderServiceService.findById(id);
+        if (orderService.isEmpty()) {
+            return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            // Remove aspas extras, se existirem
+            String statusLimpo = descricao.replace("\"", "").trim();
+            StatusEnum statusEnum = StatusEnum.fromDescricao(statusLimpo);
+
+            var order = orderService.get();
+            order.setStatus(statusEnum);
+            orderServiceService.save(order);
+
+            return new ResponseEntity<>(order, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Status inválido: " + descricao, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
     @DeleteMapping("/serviceOrder/{id}")
     public ResponseEntity<Object> deleteOneOrderService(@PathVariable(value = "id") Long id) {
         Optional<OrderServiceModel> orderService = orderServiceService.findById(id);

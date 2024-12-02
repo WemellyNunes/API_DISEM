@@ -1,5 +1,6 @@
 package com.disem.API.dtos;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -15,6 +16,12 @@ public class ImageDTO {
     @NotNull
     private String description;
 
+    @Column(nullable = true)
+    private String observation;
+
     @NotNull
     private Long programing_id;
+
 }
+
+

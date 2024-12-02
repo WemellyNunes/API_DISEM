@@ -20,8 +20,9 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api")
@@ -38,9 +39,9 @@ public class ImageController {
     public ResponseEntity<Object> createImage(
             @RequestParam("file")MultipartFile file,
             @RequestParam("programingId") Long programingId,
-            @RequestParam(value = "description", required = false) String description)
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "observation", required = false) String observation)
             {
-
        if (file.isEmpty()){
            return new ResponseEntity<>("nenhum arquivo enviado", HttpStatus.BAD_REQUEST);
        }
@@ -75,9 +76,15 @@ public class ImageController {
             ImageModel imageModel = new ImageModel();
             imageModel.setNameFile(imagePath);
             imageModel.setDescription(description);
+            imageModel.setObservation(observation);
             imageModel.setPrograming(programingModelOptional.get());
 
             imageService.save(imageModel);
+
+            System.out.println("Recebendo arquivo: " + file.getOriginalFilename());
+            System.out.println("Content-Type: " + file.getContentType());
+            System.out.println("Programing ID: " + programingId);
+            System.out.println("Descrição: " + description);
 
             return new ResponseEntity<>(imageModel, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -85,17 +92,15 @@ public class ImageController {
         }
     }
 
-
     @GetMapping("/files")
-    public ResponseEntity<Object> getAllImages(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<ImageModel> imageModelPage = imageService.findAll(pageable);
+    public ResponseEntity<Object> getAllImages() {
+        List<ImageModel> imageModelPage = imageService.findAll();
 
         if (imageModelPage.isEmpty()){
             return new ResponseEntity<>("Imagens não encontradas", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(imageModelPage, HttpStatus.OK);
     }
-
 
     @GetMapping("/file/{id}")
     public ResponseEntity<Object> getOneImage(@PathVariable(value = "id") Long id) {
@@ -106,7 +111,6 @@ public class ImageController {
         }
         return new ResponseEntity<>(imageModelOptional.get(), HttpStatus.OK);
     }
-
 
     @DeleteMapping("/file/{id}")
     public ResponseEntity<Object> deleteImage(@PathVariable(value = "id") Long id) {
@@ -119,7 +123,6 @@ public class ImageController {
         return new ResponseEntity<>("Imagem apagada com sucesso!", HttpStatus.OK);
     }
 
-
     @PutMapping("/file/{id}")
     public ResponseEntity<Object> updateImage(@PathVariable(value = "id") Long id, @RequestBody @Valid ImageDTO imageDTO) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
@@ -131,6 +134,7 @@ public class ImageController {
 
             imageModel.setNameFile(imageDTO.getNameFile());
             imageModel.setDescription(imageDTO.getDescription());
+            imageModel.setObservation(imageModel.getObservation());
 
             return new ResponseEntity<>(imageService.save(imageModel), HttpStatus.OK);
         }
