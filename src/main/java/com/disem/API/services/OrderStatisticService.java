@@ -2,13 +2,16 @@ package com.disem.API.services;
 
 import com.disem.API.enums.OrdersServices.*;
 import com.disem.API.repositories.OrderServiceRepository;
+import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -62,23 +65,27 @@ public class OrderStatisticService {
 
 
     public Map<String, Long> findOrdersSipacForStatus(OriginEnum origin, StatusEnum status1, StatusEnum status2){
-        long toAttendCount = orderServiceRepository.countByOriginAndStatus(origin, status1);
-        long finalizedCount = orderServiceRepository.countByOriginAndStatus(origin, status2);
+        List<StatusEnum> excludedStatuses = java.util.Arrays.asList(StatusEnum.NEGADO);
+
+        long toAttendCount = orderServiceRepository.countByOriginAndStatusNotIn(origin, excludedStatuses);
+        long finalizedCount = orderServiceRepository.countByOriginAndStatus(origin, StatusEnum.FINALIZADO);
 
         Map<String, Long> ordersSipac = new HashMap<>();
         ordersSipac.put("A_ATENDER", toAttendCount);
-        ordersSipac.put("FINALIZADAS", finalizedCount);
+        ordersSipac.put("FINALIZADO", finalizedCount);
         return ordersSipac;
     }
 
 
     public Map<String, Long> findOrdersByStatusesForPeriod(LocalDate startDate, LocalDate endDate, StatusEnum status1, StatusEnum status2){
-        long toAttendCount = orderServiceRepository.countByStatusAndDateBetween(status1, startDate, endDate);
-        long finalizedCount = orderServiceRepository.countByStatusAndDateBetween(status2, startDate, endDate);
+        List<StatusEnum> excludedStatuses = java.util.Arrays.asList(StatusEnum.NEGADO);
+
+        long toAttendCount = orderServiceRepository.countByStatusNotInAndDateBetween(excludedStatuses, startDate, endDate);
+        long finalizedCount = orderServiceRepository.countByStatusAndDateBetween(StatusEnum.FINALIZADO, startDate, endDate);
 
         Map<String, Long> ordersPeriod = new HashMap<>();
         ordersPeriod.put("A_ATENDER", toAttendCount);
-        ordersPeriod.put("FINALIZADAS", finalizedCount);
+        ordersPeriod.put("FINALIZADO", finalizedCount);
         return ordersPeriod;
     }
 

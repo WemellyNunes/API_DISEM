@@ -9,7 +9,7 @@ public enum CampusEnum {
     SANTANA_DO_ARAGUAIA("SANTANA DO ARAGUAIA"),
     XINGUARA("XINGUARA"),
     SAO_FELIX_DO_XINGU("SAO FELIX DO XINGU"),
-    RONDON_DO_PARA("RONDON"),;
+    RONDON("RONDON"),;
 
     private final String name;
 

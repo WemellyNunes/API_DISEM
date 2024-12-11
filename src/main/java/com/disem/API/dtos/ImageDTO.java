@@ -1,6 +1,6 @@
 package com.disem.API.dtos;
 
-import jakarta.persistence.Column;
+import com.disem.API.enums.OrdersServices.TypeEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -13,11 +13,10 @@ public class ImageDTO {
     @NotBlank
     private String nameFile;
 
-    @NotNull
+
     private String description;
 
-    @Column(nullable = true)
-    private String observation;
+    private TypeEnum type;
 
     @NotNull
     private Long programing_id;

@@ -1,16 +1,13 @@
 package com.disem.API.controllers;
 
 import com.disem.API.dtos.ImageDTO;
+import com.disem.API.enums.OrdersServices.TypeEnum;
 import com.disem.API.models.ImageModel;
 import com.disem.API.models.ProgramingModel;
 import com.disem.API.services.ImageService;
 import com.disem.API.services.ProgramingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api")
@@ -35,56 +31,45 @@ public class ImageController {
     @Autowired
     ProgramingService programingService;
 
+
+
     @PostMapping("/uploadFile")
     public ResponseEntity<Object> createImage(
-            @RequestParam("file")MultipartFile file,
+            @RequestParam("file") MultipartFile file,
             @RequestParam("programingId") Long programingId,
-            @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "observation", required = false) String observation)
-            {
-       if (file.isEmpty()){
-           return new ResponseEntity<>("nenhum arquivo enviado", HttpStatus.BAD_REQUEST);
-       }
-
-        String contentType = file.getContentType();
-        if (contentType == null || (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
-            return new ResponseEntity<>("Apenas arquivos JPG ou PNG são permitidos", HttpStatus.BAD_REQUEST);
+            @RequestParam("type") TypeEnum type,
+            @RequestParam(value = "description", required = false) String description
+    ) {
+        if (file.isEmpty()) {
+            return new ResponseEntity<>("Nenhum arquivo enviado", HttpStatus.BAD_REQUEST);
         }
 
         Optional<ProgramingModel> programingModelOptional = programingService.findById(programingId);
-
         if (programingModelOptional.isEmpty()) {
             return new ResponseEntity<>("Programação não encontrada", HttpStatus.NOT_FOUND);
         }
 
-        if (description == null || description.isEmpty()) {
-            description = "Descrição padrão da imagem";
-        }
-
         try {
             String uploadDir = System.getProperty("user.dir") + "/uploads/images/";
-
             File uploadDirFile = new File(uploadDir);
             if (!uploadDirFile.exists()) {
                 uploadDirFile.mkdirs();
             }
+
             String fileName = file.getOriginalFilename();
             Path path = Paths.get(uploadDir + fileName);
             Files.write(path, file.getBytes());
 
-            String imagePath =  "/uploads/images/" + fileName;
+            String imagePath = "/uploads/images/" + fileName;
             ImageModel imageModel = new ImageModel();
             imageModel.setNameFile(imagePath);
-            imageModel.setDescription(description);
-            imageModel.setObservation(observation);
+            imageModel.setDescription(description != null ? description : "Descrição padrão");
+            imageModel.setType(type);
             imageModel.setPrograming(programingModelOptional.get());
 
             imageService.save(imageModel);
 
-            System.out.println("Recebendo arquivo: " + file.getOriginalFilename());
-            System.out.println("Content-Type: " + file.getContentType());
-            System.out.println("Programing ID: " + programingId);
-            System.out.println("Descrição: " + description);
+            System.out.println("Descrição recebida: " + description);
 
             return new ResponseEntity<>(imageModel, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -93,19 +78,22 @@ public class ImageController {
     }
 
     @GetMapping("/files")
-    public ResponseEntity<Object> getAllImages() {
-        List<ImageModel> imageModelPage = imageService.findAll();
+    public ResponseEntity<Object> getAllImages( @RequestParam(required = false) Long programingId) {
+        List<ImageModel> imageModels;
+        if (programingId != null) {
+            imageModels = imageService.findByProgramingId(programingId);
+        }
+        else imageModels = imageService.findAll();
 
-        if (imageModelPage.isEmpty()){
+        if (imageModels.isEmpty()) {
             return new ResponseEntity<>("Imagens não encontradas", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(imageModelPage, HttpStatus.OK);
+        return new ResponseEntity<>(imageModels, HttpStatus.OK);
     }
 
     @GetMapping("/file/{id}")
     public ResponseEntity<Object> getOneImage(@PathVariable(value = "id") Long id) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
-
         if (imageModelOptional.isEmpty()) {
             return new ResponseEntity<>("Imagem não encontrada", HttpStatus.NOT_FOUND);
         }
@@ -115,7 +103,6 @@ public class ImageController {
     @DeleteMapping("/file/{id}")
     public ResponseEntity<Object> deleteImage(@PathVariable(value = "id") Long id) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
-
         if (imageModelOptional.isEmpty()) {
             return new ResponseEntity<>("Imagem não encontrada", HttpStatus.NOT_FOUND);
         }
@@ -124,19 +111,27 @@ public class ImageController {
     }
 
     @PutMapping("/file/{id}")
-    public ResponseEntity<Object> updateImage(@PathVariable(value = "id") Long id, @RequestBody @Valid ImageDTO imageDTO) {
+    public ResponseEntity<Object> updateImage(
+            @PathVariable(value = "id") Long id,
+            @RequestBody @Valid ImageDTO imageDTO
+    ) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);
         if (imageModelOptional.isEmpty()) {
-            return new ResponseEntity<>("Imagem não escontrada!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Imagem não encontrada!", HttpStatus.NOT_FOUND);
         }
-        else {
-            var imageModel = imageModelOptional.get();
 
-            imageModel.setNameFile(imageDTO.getNameFile());
-            imageModel.setDescription(imageDTO.getDescription());
-            imageModel.setObservation(imageModel.getObservation());
-
-            return new ResponseEntity<>(imageService.save(imageModel), HttpStatus.OK);
+        Optional<ProgramingModel> programingModelOptional = programingService.findById(imageDTO.getPrograming_id());
+        if (programingModelOptional.isEmpty()) {
+            return new ResponseEntity<>("Programação não encontrada!", HttpStatus.NOT_FOUND);
         }
+
+        var imageModel = imageModelOptional.get();
+        var programingModel = programingModelOptional.get();
+
+        imageModel.setNameFile(imageDTO.getNameFile());
+        imageModel.setDescription(imageDTO.getDescription());
+        imageModel.setPrograming(programingModel);
+
+        return new ResponseEntity<>(imageService.save(imageModel), HttpStatus.OK);
     }
 }

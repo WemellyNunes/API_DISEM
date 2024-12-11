@@ -11,4 +11,5 @@ public interface FinalizeRepository extends JpaRepository<FinalizeModel,Long> {
 
     List<FinalizeModel> findByProgramingId(Long programingId);
 
+
 }

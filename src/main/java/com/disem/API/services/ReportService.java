@@ -1,12 +1,16 @@
 package com.disem.API.services;
 
+import com.disem.API.enums.OrdersServices.CampusEnum;
 import com.disem.API.enums.OrdersServices.StatusEnum;
+import com.disem.API.enums.OrdersServices.TypeEnum;
 import com.disem.API.models.*;
 import com.disem.API.repositories.*;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.source.ByteArrayOutputStream;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -27,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -52,6 +57,8 @@ public class ReportService {
 
     @Autowired
     private FinalizeRepository finalizeRepository;
+
+    Color colorGray = new DeviceRgb(128,128,128);
 
     public OrderServiceModel findOrderServiceById(Long id) {
         return orderServiceService.findById(id)
@@ -82,19 +89,22 @@ public class ReportService {
             Paragraph universityName = new Paragraph("Universidade Federal do Sul e Sudeste do Pará")
                     .setFont(boldFont)
                     .setFontSize(12)
-                    .setTextAlignment(TextAlignment.CENTER);
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontColor(colorGray);
             document.add(universityName);
 
             Paragraph secretaryName = new Paragraph("Secretaria de Infraestrutura")
                     .setFont(boldFont)
                     .setFontSize(12)
-                    .setTextAlignment(TextAlignment.CENTER);
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontColor(colorGray);
             document.add(secretaryName);
 
             Paragraph divisionName = new Paragraph("Divisão de Serviços de Engenharia e Manutenção")
                     .setFont(boldFont)
                     .setFontSize(12)
-                    .setTextAlignment(TextAlignment.CENTER);
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontColor(colorGray);
             document.add(divisionName);
 
             document.add(new Paragraph("\n"));
@@ -104,9 +114,9 @@ public class ReportService {
 
             String tituloRelatorio;
             if (os.getStatus() == StatusEnum.EM_ATENDIMENTO) {
-                tituloRelatorio = "Programação n°" + os.getId();
+                tituloRelatorio = "Programação da Manutenção n°" + os.getId();
             } else {
-                tituloRelatorio = "Relatório n°" + os.getId();
+                tituloRelatorio = "Relatório da Manutenção n°" + os.getId();
             }
 
             Paragraph title = new Paragraph(tituloRelatorio)
@@ -135,14 +145,13 @@ public class ReportService {
             document.add(new Paragraph("Tipo de manutenção: " + os.getTypeMaintenance()));
             document.add(new Paragraph("Sistema: " + os.getSystem()));
             document.add(new Paragraph("Unidade da manutenção: " + os.getMaintenanceUnit()));
-            document.add(new Paragraph("Campus: " + os.getCampus()));
+            document.add(new Paragraph("Campus: " + os.getCampus().getName()));
             document.add(new Paragraph("Data do registro: " + os.getDate().format(formatter)));
 
             document.add(new Paragraph("\n"));
 
             ProgramingModel activePrograming = programingRepository.findByOrderServiceIdAndActive(id, "true");
             if (activePrograming != null) {
-                // Adiciona as informações da programação ativa no relatório
                 Paragraph prog = new Paragraph("Programação")
                         .setFont(boldFont)
                         .setFontSize(13);
@@ -177,27 +186,60 @@ public class ReportService {
 
                     document.add(new Paragraph("\n"));
 
-                    // Log para verificação do caminho da imagem
-                    System.out.println("Imagens encontradas, processando...");
+                    // Filtra as imagens do tipo ANTES
+                    List<ImageModel> antesImages = imageModels.stream()
+                            .filter(img -> img.getType() == TypeEnum.antes)
+                            .collect(Collectors.toList());
 
-                    for (ImageModel imageModel : imageModels) {
-                        String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
+                    // Filtra as imagens do tipo DEPOIS
+                    List<ImageModel> depoisImages = imageModels.stream()
+                            .filter(img -> img.getType() == TypeEnum.depois)
+                            .collect(Collectors.toList());
 
-                        // Verificar o caminho da imagem
-                        System.out.println("Caminho da imagem: " + imagePath);
-
-                        try {
-                            ImageData imageData = ImageDataFactory.create(imagePath);
-                            Image pdfImage = new Image(imageData);
-
-                            pdfImage.setWidth(UnitValue.createPercentValue(60));
-                            document.add(pdfImage);
-                        } catch (IOException e) {
-                            document.add(new Paragraph("Falha ao carregar a imagem: " + imageModel.getNameFile()));
-                        }
-
-                        document.add(new Paragraph("Descrição: " + imageModel.getDescription()));
+                    // Exibir imagens ANTES
+                    if (!antesImages.isEmpty()) {
+                        Paragraph antesTitle = new Paragraph("1. Imagens antes da manutenção")
+                                .setFontSize(12);
+                        document.add(antesTitle);
                         document.add(new Paragraph("\n"));
+
+                        for (ImageModel imageModel : antesImages) {
+                            String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
+                            try {
+                                ImageData imageData = ImageDataFactory.create(imagePath);
+                                Image pdfImage = new Image(imageData);
+                                pdfImage.setWidth(UnitValue.createPercentValue(60));
+                                document.add(pdfImage);
+                            } catch (IOException e) {
+                                document.add(new Paragraph("Falha ao carregar a imagem: " + imageModel.getNameFile()));
+                            }
+                            document.add(new Paragraph("Descrição: " + imageModel.getDescription())
+                                    .setFontSize(10));
+                            document.add(new Paragraph("\n"));
+                        }
+                    }
+
+                    // Exibir imagens DEPOIS
+                    if (!depoisImages.isEmpty()) {
+                        Paragraph depoisTitle = new Paragraph("2. Imagens depois da manutenção")
+                                .setFontSize(12);
+                        document.add(depoisTitle);
+                        document.add(new Paragraph("\n"));
+
+                        for (ImageModel imageModel : depoisImages) {
+                            String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
+                            try {
+                                ImageData imageData = ImageDataFactory.create(imagePath);
+                                Image pdfImage = new Image(imageData);
+                                pdfImage.setWidth(UnitValue.createPercentValue(60));
+                                document.add(pdfImage);
+                            } catch (IOException e) {
+                                document.add(new Paragraph("Falha ao carregar a imagem: " + imageModel.getNameFile()));
+                            }
+                            document.add(new Paragraph("Descrição: " + imageModel.getDescription())
+                                    .setFontSize(10));
+                            document.add(new Paragraph("\n"));
+                        }
                     }
 
                 } else {

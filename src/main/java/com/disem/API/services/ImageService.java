@@ -25,6 +25,10 @@ public class ImageService {
         return imageRepository.findAll();
     }
 
+    public List<ImageModel> findByProgramingId(Long programingId) {
+        return imageRepository.findByProgramingId(programingId);
+    }
+
     @Transactional
     public Optional<ImageModel> findById(Long id) {
         return imageRepository.findById(id);

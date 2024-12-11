@@ -8,7 +8,8 @@ public enum StatusEnum {
     EM_ATENDIMENTO("Em atendimento"),
     RESOLVIDO("Resolvido"),
     FINALIZADO("Finalizado"),
-    REABERTO("Reaberto");
+    REABERTO("Reaberto"),
+    NEGADO("Negado");
 
     private final String descricao;
 

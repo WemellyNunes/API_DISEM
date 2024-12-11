@@ -8,10 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DispatchOSService {
+public class FinalizeService {
 
     @Autowired
     FinalizeRepository repo;
@@ -23,6 +24,10 @@ public class DispatchOSService {
 
     public Page<FinalizeModel> findAll(Pageable pageable) {
         return repo.findAll(pageable);
+    }
+
+    public List<FinalizeModel> findByProgramingId(long programingId) {
+        return repo.findByProgramingId(programingId);
     }
 
     public Optional<FinalizeModel> findById(Long id) {

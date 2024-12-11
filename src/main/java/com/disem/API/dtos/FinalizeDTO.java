@@ -11,7 +11,6 @@ public class FinalizeDTO {
     @NotBlank
     private String content;
 
-    @NotNull
     private LocalDate dateContent;
 
     @NotNull

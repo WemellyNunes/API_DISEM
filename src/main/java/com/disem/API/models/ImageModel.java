@@ -1,5 +1,6 @@
 package com.disem.API.models;
 
+import com.disem.API.enums.OrdersServices.TypeEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,11 +19,9 @@ public class ImageModel {
     @NotBlank
     private String nameFile;
 
-    @NotNull
-    private String description;
+    private TypeEnum type;
 
-    @Column(nullable = true)
-    private String observation;
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "programing_id")
