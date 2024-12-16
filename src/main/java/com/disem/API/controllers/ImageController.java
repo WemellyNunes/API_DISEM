@@ -40,6 +40,12 @@ public class ImageController {
             @RequestParam("type") TypeEnum type,
             @RequestParam(value = "description", required = false) String description
     ) {
+        final long MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            return new ResponseEntity<>("Arquivo excede o limite de 5MB", HttpStatus.BAD_REQUEST);
+        }
+
         if (file.isEmpty()) {
             return new ResponseEntity<>("Nenhum arquivo enviado", HttpStatus.BAD_REQUEST);
         }

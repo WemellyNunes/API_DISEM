@@ -4,6 +4,7 @@ import com.disem.API.dtos.OrderServiceDTO;
 import com.disem.API.enums.OrdersServices.*;
 import com.disem.API.models.OrderServiceModel;
 import com.disem.API.models.ProgramingModel;
+import com.disem.API.services.EmailNotificationService;
 import com.disem.API.services.EmailService;
 import com.disem.API.services.OrderServiceService;
 import jakarta.mail.MessagingException;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-
 @RestController
 @RequestMapping("api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -31,23 +31,27 @@ public class OrderServiceController {
     OrderServiceService orderServiceService;
 
     @Autowired
-    EmailService emailService;
+    EmailNotificationService emailNotificationService;
 
+    public OrderServiceController(OrderServiceService orderServiceService, EmailNotificationService emailNotificationService) {
+        this.orderServiceService = orderServiceService;
+        this.emailNotificationService = emailNotificationService;
+    }
 
     @PostMapping("/serviceOrder")
     public ResponseEntity<Object> saveOrderService(@RequestBody @Valid OrderServiceDTO orderServiceDTO){
         var orderServiceModel = new OrderServiceModel();
-
-        try {
-            emailService.sendSimpleMail("wemellysnunes@gmail.com",
-                    "DISEM - Informativo de Ordem de Serviços",
-                    "A ordem de serviço de numero: "  + orderServiceDTO.getRequisition() + " foi cadastrada com sucesso!");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
         BeanUtils.copyProperties(orderServiceDTO, orderServiceModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderServiceService.save(orderServiceModel));
+
+        var savedOrderService = orderServiceService.save(orderServiceModel);
+
+
+        emailNotificationService.sendEmailAsync("wemellysnunes@gmail.com",
+                "DISEM - Informativo de Ordem de Serviços",
+                "A ordem de serviço de numero: "  + orderServiceDTO.getRequisition() + " foi cadastrada com sucesso!"
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedOrderService);
     }
 
 

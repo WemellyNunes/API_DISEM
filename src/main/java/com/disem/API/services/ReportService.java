@@ -1,6 +1,5 @@
 package com.disem.API.services;
 
-import com.disem.API.enums.OrdersServices.CampusEnum;
 import com.disem.API.enums.OrdersServices.StatusEnum;
 import com.disem.API.enums.OrdersServices.TypeEnum;
 import com.disem.API.models.*;
@@ -25,7 +24,8 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Table;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,13 +38,7 @@ import java.util.stream.Collectors;
 public class ReportService {
 
     @Autowired
-    OrderServiceRepository orderService;
-
-    @Autowired
     OrderServiceService orderServiceService;
-
-    @Autowired
-    OrderServiceRepository orderServiceRepository;
 
     @Autowired
     ProgramingRepository programingRepository;
@@ -53,7 +47,7 @@ public class ReportService {
     ImageRepository imageRepository;
 
     @Autowired
-    FinalizeRepository dispatchOSRepository;
+    NegationRepository negationRepository;
 
     @Autowired
     private FinalizeRepository finalizeRepository;
@@ -84,7 +78,6 @@ public class ReportService {
             }
 
             PdfFont boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
-            PdfFont normalFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
 
             Paragraph universityName = new Paragraph("Universidade Federal do Sul e Sudeste do Pará")
                     .setFont(boldFont)
@@ -137,7 +130,7 @@ public class ReportService {
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-            document.add(new Paragraph("N° da requisição: " + os.getRequisition()));
+            document.add(new Paragraph("N° da requisição: " + os.getRequisition()).setPaddingTop(3));
             document.add(new Paragraph("Origem: " + os.getOrigin()));
             document.add(new Paragraph("Solicitante: " + os.getRequester()));
             document.add(new Paragraph("Unidade do solicitante: " + os.getUnit()));
@@ -149,6 +142,26 @@ public class ReportService {
             document.add(new Paragraph("Data do registro: " + os.getDate().format(formatter)));
 
             document.add(new Paragraph("\n"));
+
+            if (os.getStatus() == StatusEnum.NEGADA) {
+                NegationModel negation = negationRepository.findByOrderServiceId_Id(os.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Negação não encontrada para a ordem de serviço."));
+
+                Paragraph negationSectionTitle = new Paragraph("Não aprovada")
+                        .setFont(boldFont)
+                        .setFontSize(13);
+                document.add(negationSectionTitle);
+
+                LineSeparator negationSeparator = new LineSeparator(new SolidLine());
+                negationSeparator.setWidth(UnitValue.createPercentValue(100));
+                negationSeparator.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                document.add(negationSeparator);
+
+                document.add(new Paragraph("Justificativa: " + negation.getContent()));
+                document.add(new Paragraph("Data do registro: " + negation.getDate().format(formatter)));
+                document.add(new Paragraph("\n"));
+            }
+
 
             ProgramingModel activePrograming = programingRepository.findByOrderServiceIdAndActive(id, "true");
             if (activePrograming != null) {
@@ -199,47 +212,75 @@ public class ReportService {
                     // Exibir imagens ANTES
                     if (!antesImages.isEmpty()) {
                         Paragraph antesTitle = new Paragraph("1. Imagens antes da manutenção")
-                                .setFontSize(12);
+                                .setFontSize(12)
+                                .setPaddingBottom(3);
                         document.add(antesTitle);
-                        document.add(new Paragraph("\n"));
+
+                        String firstDescription = antesImages.get(0).getDescription();
+
+                        Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
 
                         for (ImageModel imageModel : antesImages) {
                             String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
                             try {
                                 ImageData imageData = ImageDataFactory.create(imagePath);
                                 Image pdfImage = new Image(imageData);
-                                pdfImage.setWidth(UnitValue.createPercentValue(60));
-                                document.add(pdfImage);
+                                pdfImage.setAutoScale(true);
+
+                                Cell imageCell = new Cell().add(pdfImage).setBorder(null)
+                                        .setTextAlignment(TextAlignment.CENTER)
+                                        .setPaddingBottom(3);
+                                table.addCell(imageCell);
+
                             } catch (IOException e) {
-                                document.add(new Paragraph("Falha ao carregar a imagem: " + imageModel.getNameFile()));
+                                table.addCell(new Cell().add(new Paragraph("Erro ao carregar imagem").setFontSize(10)).setBorder(null));
                             }
-                            document.add(new Paragraph("Descrição: " + imageModel.getDescription())
-                                    .setFontSize(10));
-                            document.add(new Paragraph("\n"));
                         }
+
+                        if (antesImages.size() % 2 != 0) {
+                            table.addCell(new Cell().setBorder(null));
+                        }
+
+                        document.add(table);
+                        document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
+                        document.add(new Paragraph("\n"));
                     }
 
                     // Exibir imagens DEPOIS
                     if (!depoisImages.isEmpty()) {
                         Paragraph depoisTitle = new Paragraph("2. Imagens depois da manutenção")
-                                .setFontSize(12);
+                                .setFontSize(12)
+                                .setPaddingBottom(3);
                         document.add(depoisTitle);
-                        document.add(new Paragraph("\n"));
+
+                        String firstDescription = antesImages.get(0).getDescription();
+
+                        Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
 
                         for (ImageModel imageModel : depoisImages) {
                             String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
                             try {
                                 ImageData imageData = ImageDataFactory.create(imagePath);
                                 Image pdfImage = new Image(imageData);
-                                pdfImage.setWidth(UnitValue.createPercentValue(60));
-                                document.add(pdfImage);
+                                pdfImage.setAutoScale(true);
+
+                                Cell imageCell = new Cell().add(pdfImage).setBorder(null)
+                                        .setTextAlignment(TextAlignment.CENTER)
+                                        .setPaddingBottom(3);
+                                table.addCell(imageCell);
+
+
                             } catch (IOException e) {
-                                document.add(new Paragraph("Falha ao carregar a imagem: " + imageModel.getNameFile()));
+                                table.addCell(new Cell().add(new Paragraph("Erro ao carregar imagem").setFontSize(10)).setBorder(null));
                             }
-                            document.add(new Paragraph("Descrição: " + imageModel.getDescription())
-                                    .setFontSize(10));
-                            document.add(new Paragraph("\n"));
                         }
+                        if (antesImages.size() % 2 != 0) {
+                            table.addCell(new Cell().setBorder(null));
+                        }
+
+                        document.add(table);
+                        document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
+                        document.add(new Paragraph("\n"));
                     }
 
                 } else {
@@ -267,7 +308,7 @@ public class ReportService {
                     }
                 }
             } else {
-                document.add(new Paragraph("Nenhuma programação ativa encontrada para esta ordem de serviço."));
+                document.add(new Paragraph("Nenhuma programação ativa encontrada para esta ordem de serviço.").setFontSize(10).setFontColor(colorGray).setItalic());
             }
 
             document.close();
@@ -278,6 +319,4 @@ public class ReportService {
 
         return byteArrayOutputStream.toByteArray();
     }
-
-
 }

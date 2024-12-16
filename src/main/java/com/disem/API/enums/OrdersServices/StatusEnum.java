@@ -9,7 +9,7 @@ public enum StatusEnum {
     RESOLVIDO("Resolvido"),
     FINALIZADO("Finalizado"),
     REABERTO("Reaberto"),
-    NEGADO("Negado");
+    NEGADA("Negada");
 
     private final String descricao;
 

@@ -35,7 +35,6 @@ public class FinalizeController {
 
     @PostMapping("/finish")
     public ResponseEntity<Object> createFinished(@RequestBody @Valid FinalizeDTO finalizeDTO){
-        System.out.println("Payload recebido: " + finalizeDTO);
         Optional<ProgramingModel> programingModel = programingService.findById(finalizeDTO.getPrograming_id());
 
         if (programingModel.isEmpty()){

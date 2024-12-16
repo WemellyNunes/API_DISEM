@@ -2,10 +2,8 @@ package com.disem.API.services;
 
 import com.disem.API.enums.OrdersServices.*;
 import com.disem.API.repositories.OrderServiceRepository;
-import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -65,7 +63,7 @@ public class OrderStatisticService {
 
 
     public Map<String, Long> findOrdersSipacForStatus(OriginEnum origin, StatusEnum status1, StatusEnum status2){
-        List<StatusEnum> excludedStatuses = java.util.Arrays.asList(StatusEnum.NEGADO);
+        List<StatusEnum> excludedStatuses = java.util.Arrays.asList(StatusEnum.NEGADA);
 
         long toAttendCount = orderServiceRepository.countByOriginAndStatusNotIn(origin, excludedStatuses);
         long finalizedCount = orderServiceRepository.countByOriginAndStatus(origin, StatusEnum.FINALIZADO);
@@ -78,7 +76,7 @@ public class OrderStatisticService {
 
 
     public Map<String, Long> findOrdersByStatusesForPeriod(LocalDate startDate, LocalDate endDate, StatusEnum status1, StatusEnum status2){
-        List<StatusEnum> excludedStatuses = java.util.Arrays.asList(StatusEnum.NEGADO);
+        List<StatusEnum> excludedStatuses = java.util.Arrays.asList(StatusEnum.NEGADA);
 
         long toAttendCount = orderServiceRepository.countByStatusNotInAndDateBetween(excludedStatuses, startDate, endDate);
         long finalizedCount = orderServiceRepository.countByStatusAndDateBetween(StatusEnum.FINALIZADO, startDate, endDate);

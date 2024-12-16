@@ -32,7 +32,6 @@ public class ProgramingDTO {
 
     private LocalDate modificationDate;
 
-
     private String active;
 
     @NotNull
