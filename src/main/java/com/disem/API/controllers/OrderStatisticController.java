@@ -1,16 +1,11 @@
 package com.disem.API.controllers;
 
-
 import com.disem.API.enums.OrdersServices.*;
 import com.disem.API.services.OrderStatisticService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -23,20 +18,20 @@ public class OrderStatisticController {
     OrderStatisticService orderStatisticService;
 
     @GetMapping("/statistics/classification")
-    public ResponseEntity<Map<ClassEnum, Integer>> getClassStatistics() {
-        Map<ClassEnum, Integer> ordersClassQuantities = orderStatisticService.findOrdersByClassForCurrentMonth();
+    public ResponseEntity<Map<ClassEnum, Integer>> getClassStatistics(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month) {
+        Map<ClassEnum, Integer> ordersClassQuantities = orderStatisticService.findOrdersByClassForCurrentMonth(year, month);
         return new ResponseEntity<>(ordersClassQuantities, HttpStatus.OK);
     }
 
     @GetMapping("/statistics/typeMaintenance")
-    public ResponseEntity<Map<TypeMaintenanceEnum, Double>> getTypeStatistics() {
-        Map<TypeMaintenanceEnum, Double> ordersTypeQuantities = orderStatisticService.findOrdersByTypeForCurrentMonth();
+    public ResponseEntity<Map<TypeMaintenanceEnum, Double>> getTypeStatistics(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month) {
+        Map<TypeMaintenanceEnum, Double> ordersTypeQuantities = orderStatisticService.findOrdersByTypeForCurrentMonth(year, month);
         return new ResponseEntity<>(ordersTypeQuantities, HttpStatus.OK);
     }
 
     @GetMapping("/statistics/system")
-    public ResponseEntity<Map<SystemEnum, Double>> getSystemStatistics() {
-        Map<SystemEnum, Double> ordersSystemQuantities = orderStatisticService.findOrdersBySystemForCurrentMonth();
+    public ResponseEntity<Map<SystemEnum, Double>> getSystemStatistics(@RequestParam(required = false) Integer year) {
+        Map<SystemEnum, Double> ordersSystemQuantities = orderStatisticService.findOrdersBySystemForYear(year);
         return new ResponseEntity<>(ordersSystemQuantities, HttpStatus.OK);
     }
 
@@ -65,16 +60,14 @@ public class OrderStatisticController {
     }
 
     @GetMapping("/statistics/year")
-    public ResponseEntity<Map<String,Long>> getYearOrdersCount() {
-        Map<String, Long> yearOrders = orderStatisticService.findOrdersByStatusesForCurrentYear(StatusEnum.A_ATENDER, StatusEnum.FINALIZADO);
+    public ResponseEntity<Map<String,Long>> getYearOrdersCount( @RequestParam(required = false) Integer year) {
+        Map<String, Long> yearOrders = orderStatisticService.findOrdersByStatusesForCurrentYear(year, StatusEnum.A_ATENDER, StatusEnum.FINALIZADO);
         return new ResponseEntity<>(yearOrders, HttpStatus.OK);
     }
 
     @GetMapping("statistics/campus")
-    public ResponseEntity<Map<String, Long>> getOrdersByCampus() {
-        Map<String, Long> campusOrders = orderStatisticService.findOrdersByCampus();
+    public ResponseEntity<Map<String, Long>> getOrdersByCampus(@RequestParam(required = false) Integer year ) {
+        Map<String, Long> campusOrders = orderStatisticService.findOrdersByCampus(year);
         return new ResponseEntity<>(campusOrders, HttpStatus.OK);
     }
-
-
 }
