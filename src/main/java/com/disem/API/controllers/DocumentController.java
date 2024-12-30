@@ -21,7 +21,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("api")
@@ -35,7 +35,15 @@ public class DocumentController {
     OrderServiceService orderServiceService;
 
     @PostMapping("/uploadDocument")
-    public ResponseEntity<Object> createDocument(@RequestParam("file") MultipartFile file, @RequestParam("orderServiceId") Long orderServiceId) {
+    public ResponseEntity<Object> createDocument(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("orderServiceId") Long orderServiceId
+    ) {
+        final long MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            return new ResponseEntity<>("Arquivo excede o limite de 5MB", HttpStatus.BAD_REQUEST);
+        }
 
         if (file.isEmpty()){
             return new ResponseEntity<>("nenhum arquivo enviado", HttpStatus.BAD_REQUEST);
@@ -74,12 +82,36 @@ public class DocumentController {
 
 
     @GetMapping("/documents")
-    public ResponseEntity<Object> getAllDocuments(@PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC)Pageable pageable) {
-        Page<DocumentModel> documents = documentService.findAll(pageable);
+    public ResponseEntity<Object> getAllDocuments(@RequestParam(required = false) Long orderServiceId) {
+        List<DocumentModel> documents;
+
+        if (orderServiceId != null) {
+            documents = documentService.findByOrderServiceId(orderServiceId);
+        } else documents = documentService.findAll();
 
         if (documents.isEmpty()){
             return new ResponseEntity<>("Documentos não encontrados",HttpStatus.NOT_FOUND);
         }
+
+        List<Map<String, Object>> documentsData = new ArrayList<>();
+        for (DocumentModel documentModel : documents) {
+            String filePath = System.getProperty("user.dir") + documentModel.getNameFile();
+            Map<String, Object> documentData = new HashMap<>();
+            documentData.put("nameFile", documentModel.getNameFile());
+            documentData.put("description", documentModel.getDescription());
+
+            try {
+                byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
+                String base64Content = Base64.getEncoder().encodeToString(fileContent);
+                documentData.put("content", base64Content);
+            } catch (Exception e) {
+                documentData.put("content", null);
+                System.err.println("Erro ao ler arquivo" + filePath);
+            }
+
+            documentsData.add(documentData);
+        }
+
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
 

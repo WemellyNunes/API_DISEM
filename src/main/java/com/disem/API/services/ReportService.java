@@ -132,9 +132,9 @@ public class ReportService {
 
             document.add(new Paragraph("N° da requisição: " + os.getRequisition()).setPaddingTop(3));
             document.add(new Paragraph("Origem: " + os.getOrigin()));
-            document.add(new Paragraph("Solicitante: " + os.getRequester()));
-            document.add(new Paragraph("Unidade do solicitante: " + os.getUnit()));
-            document.add(new Paragraph("Objeto de preparo: " + os.getPreparationObject()));
+            document.add(new Paragraph("Solicitante: " + os.getRequester().toUpperCase()));
+            document.add(new Paragraph("Unidade do solicitante: " + os.getUnit().toUpperCase()));
+            document.add(new Paragraph("Objeto de preparo: " + os.getPreparationObject().toUpperCase()));
             document.add(new Paragraph("Tipo de manutenção: " + os.getTypeMaintenance()));
             document.add(new Paragraph("Sistema: " + os.getSystem()));
             document.add(new Paragraph("Unidade da manutenção: " + os.getMaintenanceUnit()));
@@ -175,7 +175,7 @@ public class ReportService {
                 l1.setHorizontalAlignment(HorizontalAlignment.CENTER);
                 document.add(l1);
 
-                document.add(new Paragraph("Data programada: " + activePrograming.getDatePrograming().format(formatter)));
+                document.add(new Paragraph("Data programada: " + activePrograming.getDatePrograming().format(formatter).toUpperCase()));
                 document.add(new Paragraph("Horario programado: " + activePrograming.getTime()));
                 document.add(new Paragraph("Encarregado: " + activePrograming.getOverseer()));
                 document.add(new Paragraph("Profissionais: " + activePrograming.getWorker()));

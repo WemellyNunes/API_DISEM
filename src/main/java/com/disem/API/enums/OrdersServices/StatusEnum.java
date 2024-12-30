@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum StatusEnum {
     A_ATENDER("A atender"),
     EM_ATENDIMENTO("Em atendimento"),
-    RESOLVIDO("Resolvido"),
+    ATENDIDA("Atendida"),
     FINALIZADO("Finalizado"),
     REABERTO("Reaberto"),
     NEGADA("Negada");

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,13 +23,17 @@ public class DocumentService {
         return documentRepository.save(documentModel);
     }
 
-    @Transactional
+
+    public List<DocumentModel> findByOrderServiceId(Long orderServiceId) {
+        return documentRepository.findByOrderServiceId(orderServiceId);
+    }
+
     public Optional<DocumentModel> findById(Long id) {
         return documentRepository.findById(id);
     }
 
-    public Page<DocumentModel> findAll(Pageable pageable) {
-        return documentRepository.findAll(pageable);
+    public List<DocumentModel> findAll() {
+        return documentRepository.findAll();
     }
 
     @Transactional

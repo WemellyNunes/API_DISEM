@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("api")
@@ -94,7 +94,28 @@ public class ImageController {
         if (imageModels.isEmpty()) {
             return new ResponseEntity<>("Imagens não encontradas", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(imageModels, HttpStatus.OK);
+
+        List<Map<String, Object>> imageDataList = new ArrayList<>();
+        for (ImageModel imageModel : imageModels) {
+            Map<String, Object> imageData = new HashMap<>();
+            imageData.put("id", imageModel.getId());
+            imageData.put("nameFile", imageModel.getNameFile());
+            imageData.put("description", imageModel.getDescription());
+            imageData.put("type", imageModel.getType());
+
+            String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
+            try {
+                byte[] fileContent = Files.readAllBytes(Paths.get(imagePath));
+                String base64Content = Base64.getEncoder().encodeToString(fileContent);
+                imageData.put("content", base64Content);
+            } catch (IOException e) {
+                imageData.put("content", null);
+                System.err.println("Erro ao ler imagem: " + e.getMessage());
+            }
+
+            imageDataList.add(imageData);
+        }
+        return new ResponseEntity<>(imageDataList, HttpStatus.OK);
     }
 
     @GetMapping("/file/{id}")
