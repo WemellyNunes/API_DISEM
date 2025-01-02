@@ -112,7 +112,6 @@ public class OrderStatisticService {
         return findOrdersByStatusesForPeriod(startDate, endDate, status1, status2);
     }
 
-
     public Map<String, Long> findOrdersByStatusesForToday(StatusEnum status1, StatusEnum status2) {
         LocalDate today = LocalDate.now();
         return findOrdersByStatusesForPeriod(today, today, status1, status2);

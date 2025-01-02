@@ -162,7 +162,6 @@ public class ReportService {
                 document.add(new Paragraph("\n"));
             }
 
-
             ProgramingModel activePrograming = programingRepository.findByOrderServiceIdAndActive(id, "true");
             if (activePrograming != null) {
                 Paragraph prog = new Paragraph("Programação")
@@ -199,17 +198,14 @@ public class ReportService {
 
                     document.add(new Paragraph("\n"));
 
-                    // Filtra as imagens do tipo ANTES
                     List<ImageModel> antesImages = imageModels.stream()
                             .filter(img -> img.getType() == TypeEnum.antes)
                             .collect(Collectors.toList());
 
-                    // Filtra as imagens do tipo DEPOIS
                     List<ImageModel> depoisImages = imageModels.stream()
                             .filter(img -> img.getType() == TypeEnum.depois)
                             .collect(Collectors.toList());
 
-                    // Exibir imagens ANTES
                     if (!antesImages.isEmpty()) {
                         Paragraph antesTitle = new Paragraph("1. Imagens antes da manutenção")
                                 .setFontSize(12)
@@ -220,12 +216,13 @@ public class ReportService {
 
                         Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
 
-                        for (ImageModel imageModel : antesImages) {
+                        for (int i = 0; i < antesImages.size(); i++) {
+                            ImageModel imageModel = antesImages.get(i);
                             String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
                             try {
                                 ImageData imageData = ImageDataFactory.create(imagePath);
                                 Image pdfImage = new Image(imageData);
-                                pdfImage.setAutoScale(true);
+                                pdfImage.scaleToFit(350, 350);
 
                                 Cell imageCell = new Cell().add(pdfImage).setBorder(null)
                                         .setTextAlignment(TextAlignment.CENTER)
@@ -235,18 +232,18 @@ public class ReportService {
                             } catch (IOException e) {
                                 table.addCell(new Cell().add(new Paragraph("Erro ao carregar imagem").setFontSize(10)).setBorder(null));
                             }
+
+                            if ((i + 1) % 2 == 0 || i == antesImages.size() - 1) {
+                                document.add(table);
+                                table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
+                                table.setKeepTogether(false);
+                            }
                         }
 
-                        if (antesImages.size() % 2 != 0) {
-                            table.addCell(new Cell().setBorder(null));
-                        }
-
-                        document.add(table);
                         document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
                         document.add(new Paragraph("\n"));
                     }
 
-                    // Exibir imagens DEPOIS
                     if (!depoisImages.isEmpty()) {
                         Paragraph depoisTitle = new Paragraph("2. Imagens depois da manutenção")
                                 .setFontSize(12)
@@ -257,12 +254,13 @@ public class ReportService {
 
                         Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
 
-                        for (ImageModel imageModel : depoisImages) {
+                        for (int i = 0; i < depoisImages.size(); i++) {
+                            ImageModel imageModel = depoisImages.get(i);
                             String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
                             try {
                                 ImageData imageData = ImageDataFactory.create(imagePath);
                                 Image pdfImage = new Image(imageData);
-                                pdfImage.setAutoScale(true);
+                                pdfImage.scaleToFit(350,350);
 
                                 Cell imageCell = new Cell().add(pdfImage).setBorder(null)
                                         .setTextAlignment(TextAlignment.CENTER)
@@ -273,12 +271,14 @@ public class ReportService {
                             } catch (IOException e) {
                                 table.addCell(new Cell().add(new Paragraph("Erro ao carregar imagem").setFontSize(10)).setBorder(null));
                             }
-                        }
-                        if (antesImages.size() % 2 != 0) {
-                            table.addCell(new Cell().setBorder(null));
+
+                            if ((i + 1) % 2 == 0 || i == depoisImages.size() - 1) {
+                                document.add(table);
+                                table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
+                                table.setKeepTogether(false); // Permitir quebra de página na próxima tabela
+                            }
                         }
 
-                        document.add(table);
                         document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
                         document.add(new Paragraph("\n"));
                     }

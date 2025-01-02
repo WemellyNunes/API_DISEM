@@ -32,7 +32,6 @@ public class ImageController {
     ProgramingService programingService;
 
 
-
     @PostMapping("/uploadFile")
     public ResponseEntity<Object> createImage(
             @RequestParam("file") MultipartFile file,
