@@ -10,6 +10,7 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Data
@@ -71,7 +72,7 @@ public class OrderServiceModel {
 
     private LocalDate modificationDate;
 
-    private String openDays;
+    private Integer openDays;
 
     @JsonIgnore
     @OneToMany(mappedBy = "orderService")
@@ -80,6 +81,21 @@ public class OrderServiceModel {
     @JsonIgnore
     @OneToMany(mappedBy = "orderService")
     private List<DocumentModel> documents = new ArrayList<>();
+
+
+    public void calculateOpenDays() {
+        Optional<ProgramingModel> activePrograming = programings.stream()
+                .filter(programing -> "true".equals(programing.getActive()))
+                .findFirst();
+
+        if (activePrograming.isPresent() && this.date != null) {
+            LocalDate programingDate = activePrograming.get().getCreationDate();
+            this.openDays = (int) java.time.temporal.ChronoUnit.DAYS.between(this.date, programingDate);
+        } else {
+            this.openDays = 0;
+        }
+    }
+
 
 }
 

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +41,6 @@ public class OrderStatisticService {
         }
         return ordersClassQuantities;
     }
-
 
     public Map<TypeMaintenanceEnum, Double> findOrdersByTypeForCurrentMonth(Integer year, Integer month) {
         LocalDate[] dates = getStartAndOfMonth(year, month);
@@ -85,7 +86,6 @@ public class OrderStatisticService {
         return ordersSipac;
     }
 
-
     public Map<String, Long> findOrdersByStatusesForPeriod(LocalDate startDate, LocalDate endDate, StatusEnum status1, StatusEnum status2){
         List<StatusEnum> excludedStatuses = java.util.Arrays.asList(StatusEnum.NEGADA);
 
@@ -106,8 +106,14 @@ public class OrderStatisticService {
     }
 
     public Map<String, Long> findOrdersByStatusesForCurrentWeek(StatusEnum status1, StatusEnum status2) {
-        LocalDate startDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate endDate = startDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
+        LocalDate startDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+        LocalDate endDate = startDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
+        System.out.println("Start Date: " + startDateTime);
+        System.out.println("End Date: " + endDateTime);
 
         return findOrdersByStatusesForPeriod(startDate, endDate, status1, status2);
     }
@@ -116,7 +122,6 @@ public class OrderStatisticService {
         LocalDate today = LocalDate.now();
         return findOrdersByStatusesForPeriod(today, today, status1, status2);
     }
-
 
     public Map<String, Long> findOrdersByStatusesForCurrentYear(Integer year, StatusEnum status1, StatusEnum status2) {
         if (year == null) year = LocalDate.now().getYear();

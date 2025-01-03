@@ -36,6 +36,20 @@ public class OrderServiceService {
         orderServiceRepository.delete(orderServiceModel);
     }
 
+
+    @Transactional
+    public OrderServiceModel updateOpenDays(Long id) {
+        OrderServiceModel order = orderServiceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("OS não encontrada"));
+
+        // Calcula os dias em aberto
+        order.calculateOpenDays();
+
+        // Salva a OS com o campo atualizado
+        return orderServiceRepository.save(order);
+    }
+
+
     // Consultas específicas
 
     public Optional<OrderServiceModel> findByRequisition(Integer requisition){

@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @RestController
@@ -128,6 +130,8 @@ public class OrderServiceController {
         response.put("status", order.getStatus());
         response.put("date", order.getDate());
         response.put("modificationDate", order.getModificationDate());
+
+        order.calculateOpenDays();
         response.put("openDays", order.getOpenDays());
 
         Optional<ProgramingModel> activeProg = order.getProgramings().stream()
@@ -136,6 +140,36 @@ public class OrderServiceController {
         activeProg.ifPresent(programing -> response.put("programingId", programing.getId()));
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/serviceOrder/{id}/openDays")
+    public ResponseEntity<Object> updateOpenDays(@PathVariable(value = "id") Long id) {
+        Optional<OrderServiceModel> orderService = orderServiceService.findById(id);
+        if (orderService.isEmpty()) {
+            return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        var order = orderService.get();
+
+        // Verifica se há programação associada
+        Optional<ProgramingModel> programing = order.getProgramings().stream()
+                .filter(p -> "true".equals(p.getActive()))
+                .findFirst();
+
+        if (programing.isEmpty()) {
+            return new ResponseEntity<>("Nenhuma programação ativa encontrada", HttpStatus.BAD_REQUEST);
+        }
+
+        // Calcula os dias em aberto
+        LocalDate creationDate = order.getDate(); // Data de criação da OS
+        LocalDate programingDate = programing.get().getCreationDate(); // Data da programação
+        long openDays = ChronoUnit.DAYS.between(creationDate, programingDate);
+
+        // Atualiza os dias em aberto
+        order.setOpenDays((int) openDays);
+        orderServiceService.save(order);
+
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
 
@@ -166,7 +200,6 @@ public class OrderServiceController {
         }
     }
 
-
     @DeleteMapping("/serviceOrder/{id}")
     public ResponseEntity<Object> deleteOneOrderService(@PathVariable(value = "id") Long id) {
         Optional<OrderServiceModel> orderService = orderServiceService.findById(id);
@@ -174,7 +207,6 @@ public class OrderServiceController {
             return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
         }
         else {
-
             orderServiceService.delete(orderService.get());
             return new ResponseEntity<>("Ordem de serviço apagada", HttpStatus.OK);
         }
