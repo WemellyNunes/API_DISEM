@@ -1,9 +1,10 @@
 package com.disem.API.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -14,9 +15,13 @@ public class TeamModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank
     private String name;
 
+    @NotBlank
     private String role;
 
-    private Timestamp created_at;
+    private String status;
+
+    private LocalDate created_at;
 }
