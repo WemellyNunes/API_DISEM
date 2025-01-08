@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class TeamController {
 
     @Autowired
@@ -39,33 +39,25 @@ public class TeamController {
 
     }
 
-    @PostMapping(value = "teams/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> uploadTeam(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/teams/upload")
+    public ResponseEntity<Object> uploadTeam(@RequestBody List<@Valid TeamDTO> teamDTOList) {
         try {
-            // Lê o arquivo enviado
-            Workbook workbook = new XSSFWorkbook(file.getInputStream());
-            Sheet sheet = workbook.getSheetAt(0);
-            List<TeamModel> teamModels = new ArrayList<>();
-
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Ignorar cabeçalho
-
-                TeamModel teamModel = new TeamModel();
-                teamModel.setName(row.getCell(0).getStringCellValue());
-                teamModel.setRole(row.getCell(1).getStringCellValue());
-                teamModel.setStatus(row.getCell(2).getStringCellValue());
-                teamModels.add(teamModel);
-            }
-            workbook.close();
+            // Converte os DTOs para entidades
+            List<TeamModel> teamModels = teamDTOList.stream().map(dto -> {
+                var teamModel = new TeamModel();
+                BeanUtils.copyProperties(dto, teamModel);
+                return teamModel;
+            }).toList();
 
             // Salva no banco de dados
             var savedTeams = teamService.saveAll(teamModels);
             return new ResponseEntity<>(savedTeams, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            return new ResponseEntity<>("Erro ao processar a planilha: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Erro ao salvar os profissionais: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @GetMapping("teams")
     public ResponseEntity<Object> getAllTeams() {
