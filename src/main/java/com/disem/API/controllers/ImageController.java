@@ -22,7 +22,8 @@ import java.util.*;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = { "http://localhost:5173", "http://app-disem.com.s3-website-sa-east-1.amazonaws.com/"
+}, allowedHeaders = "*")
 public class ImageController {
 
     @Autowired

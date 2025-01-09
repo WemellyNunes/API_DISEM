@@ -10,7 +10,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(allowedHeaders = "*", origins = "*")
+@CrossOrigin(origins = { "http://localhost:5173", "http://app-disem.com.s3-website-sa-east-1.amazonaws.com/"
+}, allowedHeaders = "*")
 public class OsHistoryController {
 
     @Autowired
