@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "TB_PROGRAMING")
 public class ProgramingModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

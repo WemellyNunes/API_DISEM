@@ -10,7 +10,7 @@ import lombok.Data;
 @Table(name = "TB_DOCUMENT")
 public class DocumentModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class NegationModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotBlank
@@ -21,6 +21,6 @@ public class NegationModel {
     private LocalDate date;
 
     @OneToOne
-    @JoinColumn(name = "orderService_id", referencedColumnName = "id", nullable = false)
-    private OrderServiceModel orderServiceId;
+    @JoinColumn(name = "orderservice_id", referencedColumnName = "id", nullable = false)
+    private OrderServiceModel orderService;
 }

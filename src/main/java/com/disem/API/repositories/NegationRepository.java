@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface NegationRepository extends JpaRepository<NegationModel, Long> {
 
-    Optional<NegationModel> findByOrderServiceId_Id(Long orderServiceId);
+    Optional<NegationModel> findByOrderServiceId(Long orderServiceId);
 
 
 }

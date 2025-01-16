@@ -29,7 +29,7 @@ public class NegationService {
     }
 
     public Optional<NegationModel> findByOrderServiceId(Long orderServiceId) {
-        return negationRepository.findByOrderServiceId_Id(orderServiceId);
+        return negationRepository.findByOrderServiceId(orderServiceId);
     }
 
     public void delete(NegationModel negationModel) {

@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @Table(name = "TB_NOTE")
 public class NoteModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank

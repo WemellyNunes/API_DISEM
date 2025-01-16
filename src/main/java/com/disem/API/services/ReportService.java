@@ -144,7 +144,7 @@ public class ReportService {
             document.add(new Paragraph("\n"));
 
             if (os.getStatus() == StatusEnum.NEGADA) {
-                NegationModel negation = negationRepository.findByOrderServiceId_Id(os.getId())
+                NegationModel negation = negationRepository.findByOrderServiceId(os.getId())
                         .orElseThrow(() -> new IllegalArgumentException("Negação não encontrada para a ordem de serviço."));
 
                 Paragraph negationSectionTitle = new Paragraph("Não aprovada")

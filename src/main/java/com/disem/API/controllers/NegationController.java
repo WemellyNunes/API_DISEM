@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = { "http://localhost:5173", "http://app-disem.com.s3-website-sa-east-1.amazonaws.com/"
+@CrossOrigin(origins = { "*"
 }, allowedHeaders = "*")
 public class NegationController {
 
@@ -43,7 +43,7 @@ public class NegationController {
         else {
             var negationModel = new NegationModel();
             BeanUtils.copyProperties(negationDTO, negationModel);
-            negationModel.setOrderServiceId(orderServiceModelOptional.get());
+            negationModel.setOrderService(orderServiceModelOptional.get());
             System.out.println("Salvando NegationModel: " + negationModel);
             return ResponseEntity.status(HttpStatus.CREATED).body(negationService.save(negationModel));
         }
@@ -82,7 +82,7 @@ public class NegationController {
         response.put("id", negationModel.getId());
         response.put("content", negationModel.getContent());
         response.put("date", negationModel.getDate());
-        response.put("orderServiceId", negationModel.getOrderServiceId().getId());
+        response.put("orderServiceId", negationModel.getOrderService().getId());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

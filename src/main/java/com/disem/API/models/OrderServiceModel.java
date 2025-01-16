@@ -17,7 +17,7 @@ import java.util.Optional;
 @Table(name = "TB_ORDER_SERVICE")
 public class OrderServiceModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
