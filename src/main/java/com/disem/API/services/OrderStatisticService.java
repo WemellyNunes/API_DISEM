@@ -37,7 +37,10 @@ public class OrderStatisticService {
 
         Map<ClassEnum, Integer> ordersClassQuantities = new HashMap<>();
         for (ClassEnum classEnum : ClassEnum.values()) {
-            ordersClassQuantities.put(classEnum, orderServiceRepository.countByClassificationAndDateBetween(classEnum, startDate, endDate));
+            Integer count = orderServiceRepository.countByClassificationAndDateBetweenAndStatusNot(
+                    classEnum, startDate, endDate, StatusEnum.NEGADA
+            );
+            ordersClassQuantities.put(classEnum, count);
         }
         return ordersClassQuantities;
     }
@@ -47,12 +50,14 @@ public class OrderStatisticService {
         LocalDate startDate = dates[0];
         LocalDate endDate = dates[1];
 
-        long totalOrders = orderServiceRepository.countByDateBetween(startDate, endDate);
+        long totalOrders = orderServiceRepository.countByDateBetweenAndStatusNot(startDate, endDate, StatusEnum.NEGADA);
 
         Map<TypeMaintenanceEnum, Double> ordersTypeQuantities = new HashMap<>();
         for (TypeMaintenanceEnum typeMaintenanceEnum : TypeMaintenanceEnum.values()) {
-            long count = orderServiceRepository.countByTypeMaintenanceAndDateBetween(typeMaintenanceEnum, startDate, endDate);
-            double percentage = Math.round((double) count / totalOrders * 100);
+            long count = orderServiceRepository.countByTypeMaintenanceAndDateBetweenAndStatusNot(
+                    typeMaintenanceEnum, startDate, endDate, StatusEnum.NEGADA
+            );
+            double percentage = totalOrders > 0 ? Math.round((double) count / totalOrders * 100) : 0.0;
             ordersTypeQuantities.put(typeMaintenanceEnum, percentage);
         }
         return ordersTypeQuantities;
@@ -63,11 +68,13 @@ public class OrderStatisticService {
         LocalDate startDate = LocalDate.of(year, 1, 1);
         LocalDate endDate = LocalDate.of(year, 12, 31);
 
-        long totalOrders = orderServiceRepository.countByDateBetween(startDate, endDate);
+        long totalOrders = orderServiceRepository.countByDateBetweenAndStatusNot(startDate, endDate, StatusEnum.NEGADA);
 
         Map<SystemEnum, Double> ordersSystemQuantities = new HashMap<>();
         for (SystemEnum systemEnum : SystemEnum.values()) {
-            long count = orderServiceRepository.countBySystemAndDateBetween(systemEnum, startDate, endDate);
+            long count = orderServiceRepository.countBySystemAndDateBetweenAndStatusNot(
+                    systemEnum, startDate, endDate, StatusEnum.NEGADA
+            );
             double percentage = totalOrders > 0 ? Math.round((double) count / totalOrders * 100) : 0.0;
             ordersSystemQuantities.put(systemEnum, percentage);
         }
@@ -139,7 +146,9 @@ public class OrderStatisticService {
         LocalDate endDate = LocalDate.of(year, 12, 31);
 
         for (CampusEnum campusEnum : CampusEnum.values()) {
-            long count = orderServiceRepository.countOrdersByCampusAndDateBetween(campusEnum, startDate,endDate);
+            long count = orderServiceRepository.countOrdersByCampusAndDateBetweenAndStatusNot(
+                    campusEnum, startDate, endDate, StatusEnum.NEGADA
+            );
             ordersCampusQuantities.put(campusEnum.name(), count);
         }
         return ordersCampusQuantities;

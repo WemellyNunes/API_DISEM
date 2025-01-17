@@ -222,7 +222,7 @@ public class ReportService {
                             try {
                                 ImageData imageData = ImageDataFactory.create(imagePath);
                                 Image pdfImage = new Image(imageData);
-                                pdfImage.scaleToFit(350, 350);
+                                pdfImage.scaleToFit(300, 300);
 
                                 Cell imageCell = new Cell().add(pdfImage).setBorder(null)
                                         .setTextAlignment(TextAlignment.CENTER)
@@ -260,7 +260,7 @@ public class ReportService {
                             try {
                                 ImageData imageData = ImageDataFactory.create(imagePath);
                                 Image pdfImage = new Image(imageData);
-                                pdfImage.scaleToFit(350,350);
+                                pdfImage.scaleToFit(300,300);
 
                                 Cell imageCell = new Cell().add(pdfImage).setBorder(null)
                                         .setTextAlignment(TextAlignment.CENTER)
