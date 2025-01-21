@@ -98,7 +98,8 @@ public class ProgramingController {
         else {
             var programingModel = programingModelOptional.get();
 
-            programingModel.setDatePrograming(programingDTO.getDatePrograming());
+            programingModel.setStartDate(programingDTO.getStartDate());
+            programingModel.setEndDate(programingDTO.getEndDate());
             programingModel.setTime(programingDTO.getTime());
             programingModel.setOverseer(programingDTO.getOverseer());
             programingModel.setWorker(programingDTO.getWorker());

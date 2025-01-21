@@ -19,7 +19,9 @@ public class ProgramingModel {
     private Long id;
 
     @NotNull
-    private LocalDate datePrograming;
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 
     @NotNull
     private String time;

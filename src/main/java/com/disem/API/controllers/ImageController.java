@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -38,8 +41,9 @@ public class ImageController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("programingId") Long programingId,
             @RequestParam("type") TypeEnum type,
-            @RequestParam(value = "description", required = false) String description
-    ) {
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "createdAt", required = false) String createdAt
+            ) {
         final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
         if (file.getSize() > MAX_FILE_SIZE) {
@@ -72,6 +76,10 @@ public class ImageController {
             imageModel.setDescription(description != null ? description : "Descrição padrão");
             imageModel.setType(type);
             imageModel.setPrograming(programingModelOptional.get());
+            LocalDateTime dateTime = (createdAt != null)
+                    ? LocalDateTime.parse(createdAt, DateTimeFormatter.ISO_DATE_TIME)
+                    : LocalDateTime.now();
+            imageModel.setCreatedAt(dateTime);
 
             imageService.save(imageModel);
 
@@ -157,6 +165,7 @@ public class ImageController {
 
         imageModel.setNameFile(imageDTO.getNameFile());
         imageModel.setDescription(imageDTO.getDescription());
+        imageModel.setCreatedAt(imageDTO.getCreatedAt());
         imageModel.setPrograming(programingModel);
 
         return new ResponseEntity<>(imageService.save(imageModel), HttpStatus.OK);

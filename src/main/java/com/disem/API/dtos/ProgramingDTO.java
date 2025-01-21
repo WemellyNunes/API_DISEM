@@ -12,7 +12,9 @@ import java.time.LocalTime;
 public class ProgramingDTO {
 
     @NotNull
-    private LocalDate datePrograming;
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 
     @NotNull
     private String time;

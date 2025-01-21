@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Table(name = "TB_IMAGE")
@@ -21,6 +23,8 @@ public class ImageModel {
     private TypeEnum type;
 
     private String description;
+
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "programing_id")

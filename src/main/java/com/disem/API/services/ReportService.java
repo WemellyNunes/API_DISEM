@@ -29,6 +29,8 @@ import com.itextpdf.layout.element.Table;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -174,9 +176,13 @@ public class ReportService {
                 l1.setHorizontalAlignment(HorizontalAlignment.CENTER);
                 document.add(l1);
 
-                document.add(new Paragraph("Data programada: " + activePrograming.getDatePrograming().format(formatter).toUpperCase()));
+                String dataProgramada = "Data programada: " + activePrograming.getStartDate().format(formatter).toUpperCase();
+                if (activePrograming.getEndDate() != null) {
+                    dataProgramada += " a " + activePrograming.getEndDate().format(formatter).toUpperCase();
+                }
+                document.add(new Paragraph(dataProgramada));
                 document.add(new Paragraph("Horario programado: " + activePrograming.getTime()));
-                document.add(new Paragraph("Encarregado: " + activePrograming.getOverseer()));
+                document.add(new Paragraph("Encarregado: " + activePrograming.getOverseer().toUpperCase()));
                 document.add(new Paragraph("Profissionais: " + activePrograming.getWorker()));
                 document.add(new Paragraph("Observação: " + activePrograming.getObservation()));
                 document.add(new Paragraph("Data do registro: " + activePrograming.getCreationDate().format(formatter)));
@@ -196,7 +202,7 @@ public class ReportService {
                     l3.setHorizontalAlignment(HorizontalAlignment.CENTER);
                     document.add(l3);
 
-                    document.add(new Paragraph("\n"));
+                    //document.add(new Paragraph("\n"));
 
                     List<ImageModel> antesImages = imageModels.stream()
                             .filter(img -> img.getType() == TypeEnum.antes)
@@ -208,11 +214,12 @@ public class ReportService {
 
                     if (!antesImages.isEmpty()) {
                         Paragraph antesTitle = new Paragraph("1. Imagens antes da manutenção")
-                                .setFontSize(12)
-                                .setPaddingBottom(3);
+                                .setFontSize(11)
+                                .setPaddingBottom(2);
                         document.add(antesTitle);
 
                         String firstDescription = antesImages.get(0).getDescription();
+                        LocalDateTime firstImageDate = antesImages.get(0).getCreatedAt();
 
                         Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
 
@@ -222,11 +229,11 @@ public class ReportService {
                             try {
                                 ImageData imageData = ImageDataFactory.create(imagePath);
                                 Image pdfImage = new Image(imageData);
-                                pdfImage.scaleToFit(300, 300);
+                                pdfImage.scaleToFit(260, 260);
 
                                 Cell imageCell = new Cell().add(pdfImage).setBorder(null)
                                         .setTextAlignment(TextAlignment.CENTER)
-                                        .setPaddingBottom(3);
+                                        .setPaddingBottom(2);
                                 table.addCell(imageCell);
 
                             } catch (IOException e) {
@@ -241,16 +248,19 @@ public class ReportService {
                         }
 
                         document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
-                        document.add(new Paragraph("\n"));
+                        document.add(new Paragraph("Data do registro: " + firstImageDate.format(formatter)).setFontSize(10));
+                        //document.add(new Paragraph("\n"));
                     }
 
                     if (!depoisImages.isEmpty()) {
                         Paragraph depoisTitle = new Paragraph("2. Imagens depois da manutenção")
-                                .setFontSize(12)
-                                .setPaddingBottom(3);
+                                .setFontSize(11)
+                                .setPaddingBottom(2);
                         document.add(depoisTitle);
 
-                        String firstDescription = antesImages.get(0).getDescription();
+                        String firstDescription = depoisImages.get(0).getDescription();
+                        LocalDateTime firstImageDate = depoisImages.get(0).getCreatedAt();
+
 
                         Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
 
@@ -260,11 +270,11 @@ public class ReportService {
                             try {
                                 ImageData imageData = ImageDataFactory.create(imagePath);
                                 Image pdfImage = new Image(imageData);
-                                pdfImage.scaleToFit(300,300);
+                                pdfImage.scaleToFit(260,260);
 
                                 Cell imageCell = new Cell().add(pdfImage).setBorder(null)
                                         .setTextAlignment(TextAlignment.CENTER)
-                                        .setPaddingBottom(3);
+                                        .setPaddingBottom(2);
                                 table.addCell(imageCell);
 
 
@@ -280,6 +290,7 @@ public class ReportService {
                         }
 
                         document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
+                        document.add(new Paragraph("Data do registro: " + firstImageDate.format(formatter)).setFontSize(10));
                         document.add(new Paragraph("\n"));
                     }
 

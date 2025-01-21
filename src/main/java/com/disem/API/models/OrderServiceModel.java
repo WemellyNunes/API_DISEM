@@ -89,7 +89,7 @@ public class OrderServiceModel {
                 .findFirst();
 
         if (activePrograming.isPresent() && this.date != null) {
-            LocalDate programingDate = activePrograming.get().getCreationDate();
+            LocalDate programingDate = activePrograming.get().getStartDate();
             this.openDays = (int) java.time.temporal.ChronoUnit.DAYS.between(this.date, programingDate);
         } else {
             this.openDays = 0;

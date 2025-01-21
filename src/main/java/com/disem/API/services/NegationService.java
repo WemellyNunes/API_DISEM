@@ -28,7 +28,7 @@ public class NegationService {
         return negationRepository.findById(id);
     }
 
-    public Optional<NegationModel> findByOrderServiceId(Long orderServiceId) {
+    public Optional<NegationModel> findByOrderServiceId(long orderServiceId) {
         return negationRepository.findByOrderServiceId(orderServiceId);
     }
 
