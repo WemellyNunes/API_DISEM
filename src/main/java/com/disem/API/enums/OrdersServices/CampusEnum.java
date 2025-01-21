@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CampusEnum {
 
-    MARABA("MARABA"),
-    SANTANA_DO_ARAGUAIA("SANTANA DO ARAGUAIA"),
-    XINGUARA("XINGUARA"),
-    SAO_FELIX_DO_XINGU("SAO FELIX DO XINGU"),
-    RONDON("RONDON"),;
+    MARABA("Marabá"),
+    SANTANA_DO_ARAGUAIA("Santana do Araguaia"),
+
+    XINGUARA("Xinguará"),
+    SAO_FELIX_DO_XINGU("São félix do Xingu"),
+    RONDON("Rondon"),;
 
     private final String name;
 
