@@ -24,7 +24,7 @@ public class DocumentService {
     }
 
 
-    public List<DocumentModel> findByOrderServiceId(Long orderServiceId) {
+    public List<DocumentModel> findByOrderServiceId(long orderServiceId) {
         return documentRepository.findByOrderServiceId(orderServiceId);
     }
 

@@ -20,6 +20,6 @@ public class DocumentModel {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "orderService_id")
+    @JoinColumn(name = "orderservice_id")
     private OrderServiceModel orderService;
 }

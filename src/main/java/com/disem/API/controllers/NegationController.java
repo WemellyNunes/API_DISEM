@@ -38,7 +38,7 @@ public class NegationController {
         Optional<OrderServiceModel> orderServiceModelOptional = orderService.findById(negationDTO.getOrderService_id());
 
         if (orderServiceModelOptional.isEmpty()){
-            return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Ordem de serviço não encontr                                    ada", HttpStatus.NOT_FOUND);
         }
         else {
             var negationModel = new NegationModel();
