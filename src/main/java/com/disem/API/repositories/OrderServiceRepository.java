@@ -30,10 +30,10 @@ public interface OrderServiceRepository extends JpaRepository<OrderServiceModel,
     Integer countByClassificationAndDateBetween(ClassEnum classification, LocalDate startDate, LocalDate endDate);
 
 
+
     //Estatisticas do dashboard
 
     Integer countByClassificationAndDateBetweenAndStatusNot(ClassEnum classification, LocalDate startDate, LocalDate endDate, StatusEnum excludedStatus);
-
 
     long countByDateBetweenAndStatusNot(LocalDate startDate, LocalDate endDate, StatusEnum excludedStatus);
 
@@ -45,9 +45,7 @@ public interface OrderServiceRepository extends JpaRepository<OrderServiceModel,
 
     long countByStatusAndDateBetween(StatusEnum status, LocalDate startDate, LocalDate endDate);
 
-
     long countOrdersByCampusAndDateBetweenAndStatusNot(CampusEnum campus, LocalDate startDate, LocalDate endDate, StatusEnum excludedStatus);
-
 
     long countByOriginAndStatusNotIn(OriginEnum origin, List<StatusEnum> statuses);
 

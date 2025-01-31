@@ -79,7 +79,7 @@ public class OrderServiceModel {
     private List<ProgramingModel> programings = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "orderService")
+    @OneToMany(mappedBy = "orderService", fetch = FetchType.LAZY)
     private List<DocumentModel> documents = new ArrayList<>();
 
 

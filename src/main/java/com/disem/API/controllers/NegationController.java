@@ -38,15 +38,18 @@ public class NegationController {
         Optional<OrderServiceModel> orderServiceModelOptional = orderService.findById(negationDTO.getOrderService_id());
 
         if (orderServiceModelOptional.isEmpty()){
-            return new ResponseEntity<>("Ordem de serviço não encontr                                    ada", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Ordem de serviço não encontrada", HttpStatus.NOT_FOUND);
         }
-        else {
-            var negationModel = new NegationModel();
-            BeanUtils.copyProperties(negationDTO, negationModel);
-            negationModel.setOrderService(orderServiceModelOptional.get());
-            System.out.println("Salvando NegationModel: " + negationModel);
-            return ResponseEntity.status(HttpStatus.CREATED).body(negationService.save(negationModel));
-        }
+        var negationModel = new NegationModel();
+        BeanUtils.copyProperties(negationDTO, negationModel);
+
+        var orderService = new OrderServiceModel();
+        orderService.setId(negationDTO.getOrderService_id());
+        negationModel.setOrderService(orderService);
+
+        System.out.println("Salvando NegationModel: " + negationModel);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(negationService.save(negationModel));
     }
 
     @GetMapping("/negation")
