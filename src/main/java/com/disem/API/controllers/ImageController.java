@@ -126,6 +126,27 @@ public class ImageController {
         return new ResponseEntity<>(imageDataList, HttpStatus.OK);
     }
 
+    @GetMapping("/file/view/{fileName}")
+    public ResponseEntity<byte[]> viewImage(@PathVariable String fileName) {
+        try {
+            Path imagePath = Paths.get(System.getProperty("user.dir") + "/uploads/images/").resolve(fileName);
+            if (!Files.exists(imagePath)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            byte[] imageBytes = Files.readAllBytes(imagePath);
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", Files.probeContentType(imagePath))
+                    .body(imageBytes);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
+
     @GetMapping("/file/{id}")
     public ResponseEntity<Object> getOneImage(@PathVariable(value = "id") Long id) {
         Optional<ImageModel> imageModelOptional = imageService.findById(id);

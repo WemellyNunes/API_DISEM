@@ -116,6 +116,28 @@ public class DocumentController {
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
 
+    @GetMapping("/files/{fileName}")
+    public ResponseEntity<byte[]> getFile(@PathVariable String fileName) {
+        try {
+            String uploadDir = System.getProperty("user.dir") + "/uploads/documents/";
+            Path filePath = Paths.get(uploadDir, fileName);
+
+            if (!Files.exists(filePath)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            byte[] fileBytes = Files.readAllBytes(filePath);
+            String contentType = Files.probeContentType(filePath);
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", contentType)
+                    .header("Content-Disposition", "inline; filename=\"" + fileName + "\"")
+                    .body(fileBytes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 
     @GetMapping("/document/{id}")
     public ResponseEntity<Object> findById(@PathVariable(value = "id") Long id) {
