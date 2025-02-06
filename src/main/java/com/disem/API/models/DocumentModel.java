@@ -13,8 +13,8 @@ public class DocumentModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private String nameFile;
+    @Column(name = "name_file", nullable = false)
+    private String namefile;
 
 
     private String description;

@@ -70,7 +70,7 @@ public class DocumentController {
 
             String documentPath = "/uploads/documents/" + fileName;
             DocumentModel documentModel = new DocumentModel();
-            documentModel.setNameFile(documentPath);
+            documentModel.setNamefile(documentPath);
             documentModel.setDescription("x");
             documentModel.setOrderService(orderServiceModelOptional.get());
 
@@ -96,9 +96,9 @@ public class DocumentController {
 
         List<Map<String, Object>> documentsData = new ArrayList<>();
         for (DocumentModel documentModel : documents) {
-            String filePath = System.getProperty("user.dir") + documentModel.getNameFile();
+            String filePath = System.getProperty("user.dir") + documentModel.getNamefile();
             Map<String, Object> documentData = new HashMap<>();
-            documentData.put("nameFile", documentModel.getNameFile());
+            documentData.put("nameFile", documentModel.getNamefile());
             documentData.put("description", documentModel.getDescription());
 
             try {
@@ -172,7 +172,7 @@ public class DocumentController {
         else {
             var document = documentOptional.get();
 
-            document.setNameFile(documentDTO.getNameFile());
+            document.setNamefile(documentDTO.getNamefile());
             document.setDescription(documentDTO.getDescription());
 
             return new ResponseEntity<>(documentService.save(document), HttpStatus.OK);
