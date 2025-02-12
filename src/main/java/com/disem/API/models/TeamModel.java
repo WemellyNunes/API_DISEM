@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.time.LocalDate;
-
 @Entity
 @Data
 @Table(name = "TB_TEAM")

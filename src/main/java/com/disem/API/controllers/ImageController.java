@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -34,7 +33,6 @@ public class ImageController {
 
     @Autowired
     ProgramingService programingService;
-
 
     @PostMapping("/uploadFile")
     public ResponseEntity<Object> createImage(
@@ -73,7 +71,7 @@ public class ImageController {
             String imagePath = "/uploads/images/" + fileName;
             ImageModel imageModel = new ImageModel();
             imageModel.setNameFile(imagePath);
-            imageModel.setDescription(description != null ? description : "Descrição padrão");
+            imageModel.setDescription(description != null ? description : "Imagens da manutenção realizada");
             imageModel.setType(type);
             imageModel.setPrograming(programingModelOptional.get());
             LocalDateTime dateTime = (createdAt != null)
@@ -82,8 +80,6 @@ public class ImageController {
             imageModel.setCreatedAt(dateTime);
 
             imageService.save(imageModel);
-
-            System.out.println("Descrição recebida: " + description);
 
             return new ResponseEntity<>(imageModel, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -144,8 +140,6 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
-
 
     @GetMapping("/file/{id}")
     public ResponseEntity<Object> getOneImage(@PathVariable(value = "id") Long id) {
