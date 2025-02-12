@@ -5,6 +5,7 @@ import com.disem.API.enums.OrdersServices.TypeEnum;
 import com.disem.API.models.ImageModel;
 import com.disem.API.models.ProgramingModel;
 import com.disem.API.services.ImageService;
+import com.disem.API.services.ImgCompressionService;
 import com.disem.API.services.ProgramingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class ImageController {
 
     @Autowired
     ProgramingService programingService;
+    @Autowired
+    private ImgCompressionService imgCompressionService;
 
     @PostMapping("/uploadFile")
     public ResponseEntity<Object> createImage(
@@ -59,18 +62,26 @@ public class ImageController {
 
         try {
             String uploadDir = System.getProperty("user.dir") + "/uploads/images/";
+
+            String compressedImagePath = imgCompressionService.compressAndSaveImage(file, uploadDir);
+
+            /*
             File uploadDirFile = new File(uploadDir);
             if (!uploadDirFile.exists()) {
                 uploadDirFile.mkdirs();
             }
+
 
             String fileName = file.getOriginalFilename();
             Path path = Paths.get(uploadDir + fileName);
             Files.write(path, file.getBytes());
 
             String imagePath = "/uploads/images/" + fileName;
+            */
+
+
             ImageModel imageModel = new ImageModel();
-            imageModel.setNameFile(imagePath);
+            imageModel.setNameFile(compressedImagePath);
             imageModel.setDescription(description != null ? description : "Imagens da manutenção realizada");
             imageModel.setType(type);
             imageModel.setPrograming(programingModelOptional.get());

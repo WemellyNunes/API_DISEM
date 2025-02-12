@@ -7,8 +7,8 @@ spring:
       ddl-auto: update
 
   datasource:
-    url: jdbc:postgresql://18.230.17.37:5432/apidisem
-    username: disem
+    url: jdbc:postgresql://localhost:5432/apidisem
+    username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
   sql:
@@ -19,6 +19,7 @@ spring:
     security:
       token:
         secret: ${JWT_SECRET:my-secret-key}
+
 
   minio:
     url: http://minio-dev.unifesspa.edu.br:9000
