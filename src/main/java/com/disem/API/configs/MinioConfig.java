@@ -24,5 +24,12 @@ public class MinioConfig {
                 .endpoint(url)
                 .credentials(accessKey, accessSecret)
                 .build();
-    } */
+    }
+
+     public String getBucketName() {
+        return bucketName;
+    }
+
+
+    */
 }

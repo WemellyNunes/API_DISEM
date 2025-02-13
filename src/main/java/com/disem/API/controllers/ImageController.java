@@ -4,8 +4,8 @@ import com.disem.API.dtos.ImageDTO;
 import com.disem.API.enums.OrdersServices.TypeEnum;
 import com.disem.API.models.ImageModel;
 import com.disem.API.models.ProgramingModel;
+import com.disem.API.services.FileCompressionService;
 import com.disem.API.services.ImageService;
-import com.disem.API.services.ImgCompressionService;
 import com.disem.API.services.ProgramingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,9 @@ public class ImageController {
 
     @Autowired
     ProgramingService programingService;
+
     @Autowired
-    private ImgCompressionService imgCompressionService;
+    FileCompressionService fileCompressionService;
 
     @PostMapping("/uploadFile")
     public ResponseEntity<Object> createImage(
@@ -61,27 +62,19 @@ public class ImageController {
         }
 
         try {
-            String uploadDir = System.getProperty("user.dir") + "/uploads/images/";
-
-            String compressedImagePath = imgCompressionService.compressAndSaveImage(file, uploadDir);
 
             /*
-            File uploadDirFile = new File(uploadDir);
-            if (!uploadDirFile.exists()) {
-                uploadDirFile.mkdirs();
-            }
+            compact e envia pro minio, depois colocar a url no setNameFile
+            String fileUrl = fileCompressionService.compressFile(file);
+             */
 
+            String uploadDir = System.getProperty("user.dir") + "/uploads/images/";
 
-            String fileName = file.getOriginalFilename();
-            Path path = Paths.get(uploadDir + fileName);
-            Files.write(path, file.getBytes());
-
-            String imagePath = "/uploads/images/" + fileName;
-            */
-
+            File compressedFile = fileCompressionService.compressFile(file, uploadDir);
+            String compressedFilePath = "/uploads/files/" + compressedFile.getName();
 
             ImageModel imageModel = new ImageModel();
-            imageModel.setNameFile(compressedImagePath);
+            imageModel.setNameFile(compressedFilePath);
             imageModel.setDescription(description != null ? description : "Imagens da manutenção realizada");
             imageModel.setType(type);
             imageModel.setPrograming(programingModelOptional.get());

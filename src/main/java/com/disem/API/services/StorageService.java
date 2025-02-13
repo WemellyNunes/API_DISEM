@@ -17,6 +17,8 @@ public class StorageService {
     private MinioClient minioClient;
 
     public void uploadFile(String bucketName, String objectName, InputStream inputStream, String contentType) {
+
+
         try {
             boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
             if (!found) {

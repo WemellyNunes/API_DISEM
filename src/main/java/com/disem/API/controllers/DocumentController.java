@@ -4,6 +4,7 @@ import com.disem.API.dtos.DocumentDTO;
 import com.disem.API.models.DocumentModel;
 import com.disem.API.models.OrderServiceModel;
 import com.disem.API.services.DocumentService;
+import com.disem.API.services.FileCompressionService;
 import com.disem.API.services.OrderServiceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +36,9 @@ public class DocumentController {
     @Autowired
     OrderServiceService orderServiceService;
 
+    @Autowired
+    FileCompressionService fileCompressionService;
+
     @PostMapping("/uploadDocument")
     public ResponseEntity<Object> createDocument(
             @RequestParam("file") MultipartFile file,
@@ -59,6 +63,10 @@ public class DocumentController {
         try {
             String uploadDir = System.getProperty("user.dir") + "/uploads/documents/";
 
+            File compressedFile = fileCompressionService.compressFile(file, uploadDir);
+            String documentPath = "/uploads/documents/" + compressedFile.getName();
+
+            /*
             File uploadDirFile = new File(uploadDir);
             if (!uploadDirFile.exists()) {
                 uploadDirFile.mkdirs();
@@ -69,9 +77,11 @@ public class DocumentController {
             Files.write(path, file.getBytes());
 
             String documentPath = "/uploads/documents/" + fileName;
+             */
+
             DocumentModel documentModel = new DocumentModel();
             documentModel.setNamefile(documentPath);
-            documentModel.setDescription("x");
+            documentModel.setDescription("Documento compactado");
             documentModel.setOrderService(orderServiceModelOptional.get());
 
             documentService.save(documentModel);
