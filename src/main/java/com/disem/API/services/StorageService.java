@@ -11,8 +11,6 @@ import java.io.InputStream;
 @Service
 public class StorageService {
 
-    /*
-
     @Autowired
     private MinioClient minioClient;
 
@@ -35,5 +33,4 @@ public class StorageService {
             throw new RuntimeException("Error occurred: " + e.getMessage());
         }
     }
-    */
 }

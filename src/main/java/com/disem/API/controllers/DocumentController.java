@@ -61,10 +61,11 @@ public class DocumentController {
         }
 
         try {
+
             String uploadDir = System.getProperty("user.dir") + "/uploads/documents/";
 
-            File compressedFile = fileCompressionService.compressFile(file, uploadDir);
-            String documentPath = "/uploads/documents/" + compressedFile.getName();
+            //File compressedFile = fileCompressionService.compressAndUploadFile(file);
+            //String documentPath = "/uploads/documents/" + compressedFile.getName();
 
             /*
             File uploadDirFile = new File(uploadDir);
@@ -80,7 +81,7 @@ public class DocumentController {
              */
 
             DocumentModel documentModel = new DocumentModel();
-            documentModel.setNamefile(documentPath);
+            documentModel.setNamefile(uploadDir);
             documentModel.setDescription("Documento compactado");
             documentModel.setOrderService(orderServiceModelOptional.get());
 

@@ -63,18 +63,18 @@ public class ImageController {
 
         try {
 
-            /*
-            compact e envia pro minio, depois colocar a url no setNameFile
-            String fileUrl = fileCompressionService.compressFile(file);
-             */
+            String fileUrl = fileCompressionService.compressAndUploadFile(file);
 
+            /*
             String uploadDir = System.getProperty("user.dir") + "/uploads/images/";
 
             File compressedFile = fileCompressionService.compressFile(file, uploadDir);
             String compressedFilePath = "/uploads/files/" + compressedFile.getName();
 
+             */
+
             ImageModel imageModel = new ImageModel();
-            imageModel.setNameFile(compressedFilePath);
+            imageModel.setNameFile(fileUrl);
             imageModel.setDescription(description != null ? description : "Imagens da manutenção realizada");
             imageModel.setType(type);
             imageModel.setPrograming(programingModelOptional.get());

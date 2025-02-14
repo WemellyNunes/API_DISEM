@@ -24,9 +24,8 @@ spring:
       token:
         secret: ${JWT_SECRET:my-secret-key}
 
-
   minio:
-    url: http://minio-dev.unifesspa.edu.br:9000
+    url: https://minio-dev.unifesspa.edu.br:9000
     access:
       name: minio
       secret: shi5ahshu[geFieg
