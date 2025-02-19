@@ -7,6 +7,9 @@ import com.disem.API.models.ProgramingModel;
 import com.disem.API.services.FileCompressionService;
 import com.disem.API.services.ImageService;
 import com.disem.API.services.ProgramingService;
+import io.minio.GetObjectArgs;
+import io.minio.MinioClient;
+import io.minio.errors.MinioException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,14 +17,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
 
 @RestController
 @RequestMapping("api")
@@ -37,6 +42,10 @@ public class ImageController {
 
     @Autowired
     FileCompressionService fileCompressionService;
+
+    @Autowired
+    MinioClient minioClient;
+
 
     @PostMapping("/uploadFile")
     public ResponseEntity<Object> createImage(
@@ -62,7 +71,6 @@ public class ImageController {
         }
 
         try {
-
             String fileUrl = fileCompressionService.compressAndUploadFile(file);
 
             /*
@@ -70,12 +78,11 @@ public class ImageController {
 
             File compressedFile = fileCompressionService.compressFile(file, uploadDir);
             String compressedFilePath = "/uploads/files/" + compressedFile.getName();
-
              */
 
             ImageModel imageModel = new ImageModel();
             imageModel.setNameFile(fileUrl);
-            imageModel.setDescription(description != null ? description : "Imagens da manutenção realizada");
+            imageModel.setDescription(description != null ? description : "Imagens da manutenção");
             imageModel.setType(type);
             imageModel.setPrograming(programingModelOptional.get());
             LocalDateTime dateTime = (createdAt != null)
@@ -92,18 +99,17 @@ public class ImageController {
     }
 
     @GetMapping("/files")
-    public ResponseEntity<Object> getAllImages( @RequestParam(required = false) Long programingId) {
-        List<ImageModel> imageModels;
-        if (programingId != null) {
-            imageModels = imageService.findByProgramingId(programingId);
-        }
-        else imageModels = imageService.findAll();
+    public ResponseEntity<Object> getAllImages(@RequestParam(required = false) Long programingId) {
+        List<ImageModel> imageModels = (programingId != null) ?
+                imageService.findByProgramingId(programingId) : imageService.findAll();
 
         if (imageModels.isEmpty()) {
             return new ResponseEntity<>("Imagens não encontradas", HttpStatus.NOT_FOUND);
         }
 
         List<Map<String, Object>> imageDataList = new ArrayList<>();
+        String bucketName = fileCompressionService.getBucketName();
+
         for (ImageModel imageModel : imageModels) {
             Map<String, Object> imageData = new HashMap<>();
             imageData.put("id", imageModel.getId());
@@ -111,20 +117,45 @@ public class ImageController {
             imageData.put("description", imageModel.getDescription());
             imageData.put("type", imageModel.getType());
 
-            String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
+            String fileUrl = imageModel.getNameFile();
+            imageData.put("fileUrl", fileUrl);
+
             try {
-                byte[] fileContent = Files.readAllBytes(Paths.get(imagePath));
+                String objectName = fileUrl.substring(fileUrl.indexOf(bucketName) + bucketName.length() + 1);
+                InputStream inputStream = minioClient.getObject(
+                        GetObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(objectName)
+                                .build()
+                );
+
+                byte[] fileContent = inputStreamToByteArray(inputStream);
                 String base64Content = Base64.getEncoder().encodeToString(fileContent);
                 imageData.put("content", base64Content);
-            } catch (IOException e) {
+            } catch (MinioException e) {
                 imageData.put("content", null);
-                System.err.println("Erro ao ler imagem: " + e.getMessage());
+                System.err.println("Erro ao buscar imagem no MinIO: " + e.getMessage());
+            } catch (Exception e) {
+                imageData.put("content", null);
+                System.err.println("Erro ao converter imagem para Base64: " + e.getMessage());
             }
 
             imageDataList.add(imageData);
         }
+
         return new ResponseEntity<>(imageDataList, HttpStatus.OK);
     }
+
+    private byte[] inputStreamToByteArray(InputStream inputStream) throws Exception {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] data = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, bytesRead);
+        }
+        return buffer.toByteArray();
+    }
+
 
     @GetMapping("/file/view/{fileName}")
     public ResponseEntity<byte[]> viewImage(@PathVariable String fileName) {

@@ -22,6 +22,11 @@ public class FileCompressionService {
     MinioClient minioClient;
 
     private static final String BUCKET_NAME = "sinfra";
+    private static final String BUCKET_PATH= "https://minio-dev.unifesspa.edu.br:9000/";
+
+    public String getBucketName() {
+        return BUCKET_NAME;
+    }
 
     public String compressAndUploadFile(MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();
@@ -43,15 +48,19 @@ public class FileCompressionService {
         String objectName = "uploads/" + compressedFile.getName();
         uploadToMinio(compressedFile, objectName);
 
-        return "https://minio-dev.unifesspa.edu.br:9000/" + BUCKET_NAME + "/" + objectName;
+        return BUCKET_PATH + BUCKET_NAME + "/" + objectName;
     }
 
     private void compressImage(MultipartFile file, File outputFile) throws IOException {
         BufferedImage originalImage = ImageIO.read(file.getInputStream());
 
+        if (originalImage == null) {
+            throw new IOException("Erro ao processar imagem: " + file.getOriginalFilename());
+        }
+
         Thumbnails.of(originalImage)
-                .scale(1.0)  // Mantém o tamanho original
-                .outputQuality(0.2) // Reduz para 20% da qualidade original
+                .scale(1.0)
+                .outputQuality(0.2)
                 .toFile(outputFile);
     }
 

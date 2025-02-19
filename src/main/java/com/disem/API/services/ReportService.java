@@ -22,6 +22,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.itextpdf.layout.element.Cell;
@@ -38,6 +39,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
+
+    @Autowired
+    private StorageService storageService;
 
     @Autowired
     OrderServiceService orderServiceService;
@@ -140,7 +144,7 @@ public class ReportService {
             document.add(new Paragraph("Tipo de manutenção: " + os.getTypeMaintenance()));
             document.add(new Paragraph("Sistema: " + os.getSystem()));
             document.add(new Paragraph("Unidade da manutenção: " + os.getMaintenanceUnit()));
-            document.add(new Paragraph("Campus: " + os.getCampus().getName()));
+            document.add(new Paragraph("Campus: " + os.getCampus().getName().toUpperCase()));
             document.add(new Paragraph("Data do registro: " + os.getDate().format(formatter)));
 
             document.add(new Paragraph("\n"));
@@ -189,113 +193,26 @@ public class ReportService {
 
                 document.add(new Paragraph("\n"));
 
-                List<ImageModel> imageModels = imageRepository.findByProgramingId(activePrograming.getId());
+                if (activePrograming != null) {
+                    List<ImageModel> imageModels = imageRepository.findByProgramingId(activePrograming.getId());
 
-                if (!imageModels.isEmpty()) {
-                    Paragraph image = new Paragraph("Memorial fotográfico")
-                            .setFont(boldFont)
-                            .setFontSize(13);
-                    document.add(image);
+                    if (!imageModels.isEmpty()) {
+                        document.add(new Paragraph("Memorial Fotográfico").setFont(boldFont).setFontSize(13));
 
-                    LineSeparator l3 = new LineSeparator(new SolidLine());
-                    l3.setWidth(UnitValue.createPercentValue(100));
-                    l3.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    document.add(l3);
+                        LineSeparator separator = new LineSeparator(new SolidLine());
+                        document.add(separator);
 
-                    //document.add(new Paragraph("\n"));
+                        List<ImageModel> antesImages = imageModels.stream()
+                                .filter(img -> img.getType() == TypeEnum.antes)
+                                .collect(Collectors.toList());
 
-                    List<ImageModel> antesImages = imageModels.stream()
-                            .filter(img -> img.getType() == TypeEnum.antes)
-                            .collect(Collectors.toList());
+                        List<ImageModel> depoisImages = imageModels.stream()
+                                .filter(img -> img.getType() == TypeEnum.depois)
+                                .collect(Collectors.toList());
 
-                    List<ImageModel> depoisImages = imageModels.stream()
-                            .filter(img -> img.getType() == TypeEnum.depois)
-                            .collect(Collectors.toList());
-
-                    if (!antesImages.isEmpty()) {
-                        Paragraph antesTitle = new Paragraph("1. Imagens antes da manutenção")
-                                .setFontSize(11)
-                                .setPaddingBottom(2);
-                        document.add(antesTitle);
-
-                        String firstDescription = antesImages.get(0).getDescription();
-                        LocalDateTime firstImageDate = antesImages.get(0).getCreatedAt();
-
-                        Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
-
-                        for (int i = 0; i < antesImages.size(); i++) {
-                            ImageModel imageModel = antesImages.get(i);
-                            String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
-                            try {
-                                ImageData imageData = ImageDataFactory.create(imagePath);
-                                Image pdfImage = new Image(imageData);
-                                pdfImage.scaleToFit(260, 260);
-
-                                Cell imageCell = new Cell().add(pdfImage).setBorder(null)
-                                        .setTextAlignment(TextAlignment.CENTER)
-                                        .setPaddingBottom(2);
-                                table.addCell(imageCell);
-
-                            } catch (IOException e) {
-                                table.addCell(new Cell().add(new Paragraph("Erro ao carregar imagem").setFontSize(10)).setBorder(null));
-                            }
-
-                            if ((i + 1) % 2 == 0 || i == antesImages.size() - 1) {
-                                document.add(table);
-                                table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
-                                table.setKeepTogether(false);
-                            }
-                        }
-
-                        document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
-                        document.add(new Paragraph("Data do registro: " + firstImageDate.format(formatter)).setFontSize(10));
-                        //document.add(new Paragraph("\n"));
+                        adicionarImagensAoRelatorio(document, antesImages, "1. Imagens antes da manutenção");
+                        adicionarImagensAoRelatorio(document, depoisImages, "2. Imagens depois da manutenção");
                     }
-
-                    if (!depoisImages.isEmpty()) {
-                        Paragraph depoisTitle = new Paragraph("2. Imagens depois da manutenção")
-                                .setFontSize(11)
-                                .setPaddingBottom(2);
-                        document.add(depoisTitle);
-
-                        String firstDescription = depoisImages.get(0).getDescription();
-                        LocalDateTime firstImageDate = depoisImages.get(0).getCreatedAt();
-
-
-                        Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
-
-                        for (int i = 0; i < depoisImages.size(); i++) {
-                            ImageModel imageModel = depoisImages.get(i);
-                            String imagePath = System.getProperty("user.dir") + imageModel.getNameFile();
-                            try {
-                                ImageData imageData = ImageDataFactory.create(imagePath);
-                                Image pdfImage = new Image(imageData);
-                                pdfImage.scaleToFit(260,260);
-
-                                Cell imageCell = new Cell().add(pdfImage).setBorder(null)
-                                        .setTextAlignment(TextAlignment.CENTER)
-                                        .setPaddingBottom(2);
-                                table.addCell(imageCell);
-
-
-                            } catch (IOException e) {
-                                table.addCell(new Cell().add(new Paragraph("Erro ao carregar imagem").setFontSize(10)).setBorder(null));
-                            }
-
-                            if ((i + 1) % 2 == 0 || i == depoisImages.size() - 1) {
-                                document.add(table);
-                                table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
-                                table.setKeepTogether(false); // Permitir quebra de página na próxima tabela
-                            }
-                        }
-
-                        document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
-                        document.add(new Paragraph("Data do registro: " + firstImageDate.format(formatter)).setFontSize(10));
-                        document.add(new Paragraph("\n"));
-                    }
-
-                } else {
-                    System.out.println("Nenhuma imagem encontrada.");
                 }
 
                 if (os.getStatus() == StatusEnum.FINALIZADO) {
@@ -321,13 +238,50 @@ public class ReportService {
             } else {
                 document.add(new Paragraph("Nenhuma programação ativa encontrada para esta ordem de serviço.").setFontSize(10).setFontColor(colorGray).setItalic());
             }
-
             document.close();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return byteArrayOutputStream.toByteArray();
+    }
+
+    private void adicionarImagensAoRelatorio(Document document, List<ImageModel> imagens, String titulo) {
+        if (!imagens.isEmpty()) {
+            document.add(new Paragraph(titulo).setFontSize(11).setPaddingBottom(2));
+
+            String firstDescription = imagens.get(0).getDescription();
+            LocalDateTime firstImageDate = imagens.get(0).getCreatedAt();
+
+            Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
+
+            for (int i = 0; i < imagens.size(); i++) {
+                ImageModel imageModel = imagens.get(i);
+                String imageUrl = imageModel.getNameFile();
+
+                byte[] imageBytes = storageService.downloadFile(imageUrl); // 🔹 Baixa a imagem do MinIO
+                if (imageBytes != null) {
+                    ImageData imageData = ImageDataFactory.create(imageBytes);
+                    Image pdfImage = new Image(imageData);
+                    pdfImage.scaleToFit(260, 260);
+
+                    Cell imageCell = new Cell().add(pdfImage).setBorder(null)
+                            .setTextAlignment(TextAlignment.CENTER)
+                            .setPaddingBottom(2);
+                    table.addCell(imageCell);
+                } else {
+                    table.addCell(new Cell().add(new Paragraph("Erro ao carregar imagem").setFontSize(10)).setBorder(null));
+                }
+
+                if ((i + 1) % 2 == 0 || i == imagens.size() - 1) {
+                    document.add(table);
+                    table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
+                    table.setKeepTogether(false);
+                }
+            }
+            document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
+            document.add(new Paragraph("Data do registro: " + firstImageDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).setFontSize(10));
+            document.add(new Paragraph("\n"));
+        }
     }
 }

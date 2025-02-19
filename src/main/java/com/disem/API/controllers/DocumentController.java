@@ -6,6 +6,8 @@ import com.disem.API.models.OrderServiceModel;
 import com.disem.API.services.DocumentService;
 import com.disem.API.services.FileCompressionService;
 import com.disem.API.services.OrderServiceService;
+import io.minio.GetObjectArgs;
+import io.minio.MinioClient;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,6 +43,9 @@ public class DocumentController {
 
     @Autowired
     FileCompressionService fileCompressionService;
+
+    @Autowired
+    MinioClient minioClient;
 
     @PostMapping("/uploadDocument")
     public ResponseEntity<Object> createDocument(
@@ -62,7 +70,7 @@ public class DocumentController {
 
         try {
 
-            String uploadDir = System.getProperty("user.dir") + "/uploads/documents/";
+            String fileUrl = fileCompressionService.compressAndUploadFile(file);
 
             //File compressedFile = fileCompressionService.compressAndUploadFile(file);
             //String documentPath = "/uploads/documents/" + compressedFile.getName();
@@ -81,8 +89,8 @@ public class DocumentController {
              */
 
             DocumentModel documentModel = new DocumentModel();
-            documentModel.setNamefile(uploadDir);
-            documentModel.setDescription("Documento compactado");
+            documentModel.setNamefile(fileUrl);
+            documentModel.setDescription("Arquivo compactado");
             documentModel.setOrderService(orderServiceModelOptional.get());
 
             documentService.save(documentModel);
@@ -99,54 +107,69 @@ public class DocumentController {
 
         if (orderServiceId != null) {
             documents = documentService.findByOrderServiceId(orderServiceId);
-        } else documents = documentService.findAll();
+        } else {
+            documents = documentService.findAll();
+        }
 
-        if (documents.isEmpty()){
-            return new ResponseEntity<>("Documentos não encontrados",HttpStatus.NOT_FOUND);
+        if (documents.isEmpty()) {
+            return new ResponseEntity<>("Arquivos não encontrados", HttpStatus.NOT_FOUND);
         }
 
         List<Map<String, Object>> documentsData = new ArrayList<>();
         for (DocumentModel documentModel : documents) {
-            String filePath = System.getProperty("user.dir") + documentModel.getNamefile();
             Map<String, Object> documentData = new HashMap<>();
+            documentData.put("id", documentModel.getId());
             documentData.put("nameFile", documentModel.getNamefile());
             documentData.put("description", documentModel.getDescription());
 
-            try {
-                byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
-                String base64Content = Base64.getEncoder().encodeToString(fileContent);
-                documentData.put("content", base64Content);
-            } catch (Exception e) {
-                documentData.put("content", null);
-                System.err.println("Erro ao ler arquivo" + filePath);
-            }
+            String fileUrl = documentModel.getNamefile();
+            documentData.put("fileUrl", fileUrl);
 
             documentsData.add(documentData);
         }
 
-        return new ResponseEntity<>(documents, HttpStatus.OK);
+        return new ResponseEntity<>(documentsData, HttpStatus.OK);
     }
 
     @GetMapping("/files/{fileName}")
-    public ResponseEntity<byte[]> getFile(@PathVariable String fileName) {
+    public ResponseEntity<Object> getFile(@PathVariable String fileName) {
         try {
-            String uploadDir = System.getProperty("user.dir") + "/uploads/documents/";
-            Path filePath = Paths.get(uploadDir, fileName);
+            String bucketName = fileCompressionService.getBucketName();
 
-            if (!Files.exists(filePath)) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            InputStream fileStream = minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object("uploads/" + fileName)
+                            .build()
+            );
+
+            byte[] fileBytes = inputStreamToByteArray(fileStream);
+            String base64Content = Base64.getEncoder().encodeToString(fileBytes);
+
+            String contentType = Files.probeContentType(Paths.get(fileName));
+            if (contentType == null) {
+                contentType = "application/octet-stream";
             }
 
-            byte[] fileBytes = Files.readAllBytes(filePath);
-            String contentType = Files.probeContentType(filePath);
+            Map<String, Object> response = new HashMap<>();
+            response.put("fileName", fileName);
+            response.put("content", base64Content);
+            response.put("contentType", contentType);
 
-            return ResponseEntity.ok()
-                    .header("Content-Type", contentType)
-                    .header("Content-Disposition", "inline; filename=\"" + fileName + "\"")
-                    .body(fileBytes);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao carregar o arquivo: " + e.getMessage());
         }
+    }
+
+    private byte[] inputStreamToByteArray(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] data = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, bytesRead);
+        }
+        return buffer.toByteArray();
     }
 
 
@@ -155,7 +178,7 @@ public class DocumentController {
         Optional<DocumentModel> documentOptional = documentService.findById(id);
 
         if (documentOptional.isEmpty()) {
-            return new ResponseEntity<>("Documento não encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Arquivo não encontrado", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(documentOptional.get(), HttpStatus.OK);
     }
@@ -166,10 +189,10 @@ public class DocumentController {
         Optional<DocumentModel> documentOptional = documentService.findById(id);
 
         if (documentOptional.isEmpty()) {
-            return new ResponseEntity<>("Dcomento não encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Arquivo não encontrado", HttpStatus.NOT_FOUND);
         }
         documentService.delete(documentOptional.get());
-        return new ResponseEntity<>("Documento removido com sucesso", HttpStatus.OK);
+        return new ResponseEntity<>("Arquivo removido com sucesso", HttpStatus.OK);
     }
 
 
@@ -178,7 +201,7 @@ public class DocumentController {
         Optional<DocumentModel> documentOptional = documentService.findById(id);
 
         if (documentOptional.isEmpty()) {
-            return new ResponseEntity<>("Dcomento não encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Arquivo não encontrado", HttpStatus.NOT_FOUND);
         }
         else {
             var document = documentOptional.get();
