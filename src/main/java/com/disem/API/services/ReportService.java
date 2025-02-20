@@ -230,7 +230,7 @@ public class ReportService {
                         document.add(separator);
 
                         for (FinalizeModel dispatch : dispatches) {
-                            document.add(new Paragraph("Observação final: " + dispatch.getContent()));
+                            document.add(new Paragraph("Observação: " + dispatch.getContent()));
                             document.add(new Paragraph("Data do registro: " + dispatch.getDateContent().format(formatter)));
                         }
                     }
@@ -279,7 +279,7 @@ public class ReportService {
                     table.setKeepTogether(false);
                 }
             }
-            document.add(new Paragraph("Descrição da(s) imagem(ns): " + firstDescription).setFontSize(10));
+            document.add(new Paragraph("Descrição: " + firstDescription).setFontSize(10));
             document.add(new Paragraph("Data do registro: " + firstImageDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).setFontSize(10));
             document.add(new Paragraph("\n"));
         }
