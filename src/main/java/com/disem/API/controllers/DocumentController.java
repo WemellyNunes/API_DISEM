@@ -100,7 +100,6 @@ public class DocumentController {
         }
     }
 
-
     @GetMapping("/documents")
     public ResponseEntity<Object> getAllDocuments(@RequestParam(required = false) Long orderServiceId) {
         List<DocumentModel> documents;

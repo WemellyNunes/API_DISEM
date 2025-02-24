@@ -20,9 +20,6 @@ public class MinioConfig {
 
     @PostConstruct
     public void init() {
-        System.out.println("✅ MinIO URL: " + url);
-        System.out.println("✅ MinIO Access Key: " + accessKey);
-        System.out.println("✅ MinIO Secret Key: " + accessSecret);
     }
 
     @Bean

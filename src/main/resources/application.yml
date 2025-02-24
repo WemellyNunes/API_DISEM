@@ -11,9 +11,9 @@ spring:
       ddl-auto: update
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/apidisem
-    username: postgres
-    password: postgres
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driverClassName: org.postgresql.Driver
   sql:
     init:
@@ -25,18 +25,24 @@ spring:
         secret: ${JWT_SECRET:my-secret-key}
 
   minio:
-    url: https://minio-dev.unifesspa.edu.br:9000
+    url: ${MINIO_URL}
     access:
-      name: minio
-      secret: shi5ahshu[geFieg
+      name: ${MINIO_USER}
+      secret: ${MINIO_SECRET}
     bucket:
-      name: sinfra
+      name: ${MINIO_BUCKET}
+
+  webservice:
+    token:
+      url: ${WEB_SERVICE_TOKEN}
+    link:
+      url: ${WEB_SERVICE_LINK}
 
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: wemelly@unifesspa.edu.br
-    password: hnekhfenxfhvqyzg
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
