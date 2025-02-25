@@ -8,7 +8,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ApiApplication {
 	public static void main(String[] args) {
 
-		Dotenv dotenv = Dotenv.load();
+		Dotenv dotenv = Dotenv.configure()
+				.directory("API_DISEM")
+				.ignoreIfMissing()
+				.ignoreIfMalformed()
+				.load();
+
 
 		System.setProperty("DB_URL", dotenv.get("DB_URL"));
 		System.setProperty("DB_USER", dotenv.get("DB_USER"));
@@ -24,7 +29,8 @@ public class ApiApplication {
 		System.setProperty("MAIL_USER", dotenv.get("MAIL_USER"));
 		System.setProperty("MAIL_PASSWORD", dotenv.get("MAIL_PASSWORD"));
 		System.setProperty("WEB_SERVICE_TOKEN", dotenv.get("WEB_SERVICE_TOKEN"));
-		System.setProperty("WEB_SERVICE_LINK", dotenv.get("WEB_SERVICE_LINK"));
+		System.setProperty("WEB_SERVICE_BUSCAR", dotenv.get("WEB_SERVICE_BUSCAR"));
+		System.setProperty("WEB_SERVICE_LOGIN", dotenv.get("WEB_SERVICE_LOGIN"));
 
 
 

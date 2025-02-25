@@ -35,8 +35,10 @@ spring:
   webservice:
     token:
       url: ${WEB_SERVICE_TOKEN}
-    link:
-      url: ${WEB_SERVICE_LINK}
+    buscarVinculo:
+      url: ${WEB_SERVICE_BUSCAR}
+    login:
+      url: ${WEB_SERVICE_LOGIN}
 
   mail:
     host: ${MAIL_HOST}
