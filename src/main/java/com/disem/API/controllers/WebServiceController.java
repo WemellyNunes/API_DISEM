@@ -17,13 +17,10 @@ public class WebServiceController {
     public String getToken() {
         return webService.getToken();
     }
-
     @GetMapping("buscar-usuario")
     public Map<String, Object> getUser(@RequestParam String login) {
         return webService.buscarPessoaComVinculo(login);
     }
-
-
     @PostMapping("/login")
     public String autenticarUsuario(@RequestParam String login, @RequestParam String senha) {
         return webService.autenticarUsuario(login, senha);

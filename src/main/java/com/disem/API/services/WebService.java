@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
-
 @Service
 public class WebService {
     private final RestTemplate restTemplate = new RestTemplate();
