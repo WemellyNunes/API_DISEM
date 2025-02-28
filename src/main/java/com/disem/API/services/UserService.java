@@ -10,14 +10,12 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-
     @Autowired
     UserRepository userRepository;
 
     public Optional<UserModel> findByIdUsuario(Long idUsuario) {
         return userRepository.findByIdUsuario(idUsuario);
     }
-
     public UserModel saveUser(Long idUsuario, String nome, String email, String papel) {
         Optional<UserModel> existingUser = findByIdUsuario(idUsuario);
 
@@ -29,10 +27,8 @@ public class UserService {
             user.setPapel(papel);
             return userRepository.save(user);
         }
-        return existingUser.get(); // Retorna o usuário existente se já estiver cadastrado
+        return existingUser.get();
     }
-
-
     public List<UserModel> getAllUsers() {
         return userRepository.findAll();
     }

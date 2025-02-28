@@ -41,7 +41,7 @@ public class WebServiceController {
     @PostMapping("/salvar-usuario")
     public ResponseEntity<String> salvarUsuario(@RequestBody UserModel user) {
         try {
-            if (user.getIdUsuario() == null || user.getEmail() == null) {
+            if (user.getIdUsuario() == null || user.getNome() == null) {
                 return ResponseEntity.badRequest().body("ID do usuário e nome são obrigatórios.");
             }
 
@@ -50,9 +50,9 @@ public class WebServiceController {
             if (existingUser.isPresent()) {
                 return ResponseEntity.ok("Usuário já cadastrado.");
             }
-
             userService.saveUser(user.getIdUsuario(), user.getNome(), user.getEmail(), user.getPapel());
             return ResponseEntity.ok("Usuário salvo com sucesso.");
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar usuário.");
         }
@@ -61,7 +61,6 @@ public class WebServiceController {
     @GetMapping("/usuarios")
     public List<UserModel> listarUsuarios() {
         List<UserModel> users = userService.getAllUsers();
-        System.out.println("📌 Retornando usuários: " + users.size());
         return userService.getAllUsers();
     }
 }
