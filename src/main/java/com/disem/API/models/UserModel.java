@@ -1,5 +1,6 @@
 package com.disem.API.models;
 
+import com.disem.API.enums.OrdersServices.RoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -24,9 +25,17 @@ public class UserModel {
 
     private String email;
 
-    private String papel;
+    private RoleEnum papel;
 
     @Column(name = "data_criacao", updatable = false)
     private LocalDateTime dataCriacao = LocalDateTime.now();
+
+    public void setPapel(int value) {
+        this.papel = RoleEnum.fromValue(value);
+    }
+
+    public int getPapel() {
+        return papel.getValue();
+    }
 
 }
