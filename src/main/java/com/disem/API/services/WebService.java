@@ -65,7 +65,7 @@ public class WebService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
-        System.out.println("🔐 Chamando API com a URL: " + finalUrl);
+        System.out.println("Chamando API com a URL: " + finalUrl);
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(finalUrl, HttpMethod.POST, requestEntity, String.class);

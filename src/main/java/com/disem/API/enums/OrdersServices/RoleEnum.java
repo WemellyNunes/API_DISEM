@@ -1,8 +1,5 @@
 package com.disem.API.enums.OrdersServices;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum RoleEnum {
     ADMIN(0),
     COLABORADOR_I(1),
