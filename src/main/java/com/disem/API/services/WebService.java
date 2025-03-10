@@ -2,13 +2,13 @@ package com.disem.API.services;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+
 @Service
 public class WebService {
     private final RestTemplate restTemplate = new RestTemplate();
@@ -30,11 +30,11 @@ public class WebService {
                 String newToken = response.getBody().replace("\"", "").trim();
                 return newToken;
             } else {
-                System.err.println("⚠️ Erro ao gerar token: " + response.getStatusCode());
+                System.err.println("Erro ao gerar token: " + response.getStatusCode());
                 throw new RuntimeException("Erro ao gerar token.");
             }
         } catch (Exception e) {
-            System.err.println("⚠️ Erro ao gerar token: " + e.getMessage());
+            System.err.println("Erro ao gerar token: " + e.getMessage());
             throw new RuntimeException("Erro ao gerar token.", e);
         }
     }
@@ -64,8 +64,6 @@ public class WebService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-
-        System.out.println("Chamando API com a URL: " + finalUrl);
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(finalUrl, HttpMethod.POST, requestEntity, String.class);
