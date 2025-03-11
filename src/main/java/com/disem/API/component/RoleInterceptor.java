@@ -8,11 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.List;
+
 @Component
 public class RoleInterceptor implements HandlerInterceptor {
-
     private static final Logger logger = LoggerFactory.getLogger(RoleInterceptor.class);
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String path = request.getRequestURI();
@@ -51,7 +51,13 @@ public class RoleInterceptor implements HandlerInterceptor {
             return false;
         }
     }
+
+    private static final List<RoleEnum> TIPOS_PERMITIDOS = List.of(
+            RoleEnum.ADMIN,
+            RoleEnum.COLABORADOR_I,
+            RoleEnum.COLABORADOR_II
+    );
     private boolean isAuthorized(RoleEnum userRole) {
-        return userRole == RoleEnum.ADMIN || userRole == RoleEnum.COLABORADOR_I || userRole == RoleEnum.COLABORADOR_II;
+        return TIPOS_PERMITIDOS.contains(userRole);
     }
 }
