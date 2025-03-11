@@ -41,13 +41,13 @@ public class RoleInterceptor implements HandlerInterceptor {
             } else {
                 logger.warn("Acesso negado para o papel: {}", userRole);
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().write("Access Denied");
+                response.getWriter().write("Acesso negado");
                 return false;
             }
         } catch (Exception e) {
             logger.error("Erro ao interpretar papel: {}", e.getMessage());
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("Invalid Role");
+            response.getWriter().write("Papel invalido");
             return false;
         }
     }
@@ -57,7 +57,11 @@ public class RoleInterceptor implements HandlerInterceptor {
             RoleEnum.COLABORADOR_I,
             RoleEnum.COLABORADOR_II
     );
+
+
     private boolean isAuthorized(RoleEnum userRole) {
         return TIPOS_PERMITIDOS.contains(userRole);
     }
+
+
 }

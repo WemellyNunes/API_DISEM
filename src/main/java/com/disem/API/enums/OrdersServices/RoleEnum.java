@@ -1,10 +1,11 @@
 package com.disem.API.enums.OrdersServices;
 
 public enum RoleEnum {
-    ADMIN(0),
-    COLABORADOR_I(1),
-    COLABORADOR_II(2),
-    USUARIO(3);
+    CONFIG(0),
+    ADMIN(1),
+    COLABORADOR_I(2),
+    COLABORADOR_II(3),
+    USUARIO(4);
 
     private final int value;
 
@@ -22,6 +23,6 @@ public enum RoleEnum {
                 return role;
             }
         }
-        throw new IllegalArgumentException("Invalid role: " + value);
+        throw new IllegalArgumentException("Papel invalido: " + value);
     }
 }
