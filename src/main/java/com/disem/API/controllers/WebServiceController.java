@@ -1,5 +1,6 @@
 package com.disem.API.controllers;
 
+import com.disem.API.enums.OrdersServices.RoleEnum;
 import com.disem.API.models.UserModel;
 import com.disem.API.services.UserService;
 import com.disem.API.services.WebService;
@@ -24,7 +25,7 @@ public class WebServiceController {
     @Autowired
     UserService userService;
 
-    @GetMapping
+    @GetMapping("/token")
     public String getToken() {
         return webService.getToken();
     }
@@ -49,6 +50,10 @@ public class WebServiceController {
 
             if (existingUser.isPresent()) {
                 return ResponseEntity.ok("Usuário já cadastrado.");
+            }
+
+            if (user.getPapel() == null) {
+                user.setPapel(RoleEnum.USUARIO);
             }
 
             userService.saveUser(user.getIdUsuario(), user.getNome(), user.getEmail(), user.getPapel());

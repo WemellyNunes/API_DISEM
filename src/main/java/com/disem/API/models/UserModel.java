@@ -24,17 +24,18 @@ public class UserModel {
 
     private String email;
 
+    @Enumerated(EnumType.ORDINAL)
     private RoleEnum papel;
 
     @Column(name = "data_criacao", updatable = false)
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
-    public void setPapel(int value) {
-        this.papel = RoleEnum.fromValue(value);
+    public RoleEnum getPapel() {
+        return papel;
     }
 
-    public int getPapel() {
-        return papel.getValue();
+    public void setPapel(RoleEnum papel) {
+        this.papel = papel;
     }
 
 }

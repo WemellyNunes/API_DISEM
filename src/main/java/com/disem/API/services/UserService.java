@@ -17,7 +17,7 @@ public class UserService {
     public Optional<UserModel> findByIdUsuario(Long idUsuario) {
         return userRepository.findByIdUsuario(idUsuario);
     }
-    public UserModel saveUser(Long idUsuario, String nome, String email, int papelValue) {
+    public UserModel saveUser(Long idUsuario, String nome, String email, RoleEnum papel) {
         Optional<UserModel> existingUser = findByIdUsuario(idUsuario);
 
         if (existingUser.isEmpty()) {
@@ -25,7 +25,7 @@ public class UserService {
             user.setIdUsuario(idUsuario);
             user.setNome(nome);
             user.setEmail(email);
-            user.setPapel(papelValue);
+            user.setPapel(papel);
             return userRepository.save(user);
         }
         return existingUser.get();

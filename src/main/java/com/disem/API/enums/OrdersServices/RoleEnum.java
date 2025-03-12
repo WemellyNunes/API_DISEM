@@ -1,5 +1,7 @@
 package com.disem.API.enums.OrdersServices;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum RoleEnum {
     CONFIG(0),
     ADMIN(1),
@@ -13,6 +15,7 @@ public enum RoleEnum {
         this.value = value;
     }
 
+    @JsonValue
     public int getValue() {
         return value;
     }
