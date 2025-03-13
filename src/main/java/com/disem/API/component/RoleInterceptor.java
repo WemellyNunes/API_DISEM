@@ -35,7 +35,7 @@ public class RoleInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String path = request.getRequestURI();
 
-        if (path.contains("/webservice/login") || path.contains("/webservice/token") || path.contains("/webservice/buscar-usuario")) {
+        if (path.contains("/webservice/login") || path.contains("/webservice/token") || path.contains("/webservice/buscar-usuario") || path.contains("/webservice/salvar-usuario")) {
             return true;
         }
 

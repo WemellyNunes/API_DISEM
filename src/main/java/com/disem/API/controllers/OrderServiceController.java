@@ -33,13 +33,6 @@ public class OrderServiceController {
     @Autowired
     OrderServiceService orderServiceService;
 
-    @Autowired
-    EmailNotificationService emailNotificationService;
-
-    public OrderServiceController(OrderServiceService orderServiceService, EmailNotificationService emailNotificationService) {
-        this.orderServiceService = orderServiceService;
-        this.emailNotificationService = emailNotificationService;
-    }
 
     @PostMapping("/serviceOrder")
     public ResponseEntity<Object> saveOrderService(@RequestBody @Valid OrderServiceDTO orderServiceDTO){
@@ -47,13 +40,6 @@ public class OrderServiceController {
         BeanUtils.copyProperties(orderServiceDTO, orderServiceModel);
 
         var savedOrderService = orderServiceService.save(orderServiceModel);
-
-
-        emailNotificationService.sendEmailAsync("wemellysnunes@gmail.com",
-                "DISEM - Informativo de Ordem de Serviços",
-                "A ordem de serviço de numero: "  + orderServiceDTO.getRequisition() + " foi cadastrada com sucesso!"
-        );
-
         return ResponseEntity.status(HttpStatus.CREATED).body(savedOrderService);
     }
 
