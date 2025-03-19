@@ -7,9 +7,10 @@ services:
     restart: always
     environment:
       POSTGRES_DB=mydatabase: apidisem
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - '5435:5434'
+      - '5436:5432'
     volumes:
       - ./data_apiDisem:/var/lib/postgresql/data
 
@@ -19,7 +20,7 @@ services:
         - "8080:8080"
       environment:
         SPRING_DATASOURCE_URL: jdbc:postgresql://dbDisem:5432/apidisem
-        SPRING_DATASOURCE_USERNAME: disem
+        SPRING_DATASOURCE_USERNAME: postgres
         SPRING_DATASOURCE_PASSWORD: postgres
 
 
